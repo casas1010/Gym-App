@@ -37,7 +37,7 @@ const SearchScreen = () => {
 
 
       <ResultsList
-          results={results.exerciseNames}
+          results={results.data}
           title={'All exercises'}
       />
 
