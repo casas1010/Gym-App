@@ -6,6 +6,8 @@ import {
   ScrollView,
   FlatList,
   SafeAreaView,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import { connect } from "react-redux";
 import * as actions from "../actions/index";
@@ -13,53 +15,53 @@ import * as actions from "../actions/index";
 import SearchBar from "../components/SearchBar";
 import useResults from "../hooks/useResults";
 import ResultsList from "../components/ResultsList";
+import ListCard from '../components/ListCard'
+
+// PULL ALLL IMAGES FROM HERE: https://www.britannica.com/science/human-muscle-system/The-abdomen
 
 const SearchScreen = (props) => {
-  // const [data,setData]= useState();
 
-  useEffect(() => {
-    // props.fetchExercises();
-    // setData(props.exercises)
-    // console.log("useEffect");
-    // console.log(props.exercises);
-    // console.log('exercises.exercises',exercises.exercises)
-  }, []);
-
-  // return(
-  //   <Text>hi</Text>
-  // )
+  // useEffect(() => {
+  //   // console.log(props.exercises);
+  //   // console.log('exercises.exercises',exercises.exercises)
+  // }, []);
+  const openCardDetails = (name) =>{
+    console.log(`card ${name} has been clicked!`)
+    props.navigation.navigate('DETAILS',{
+      name:name
+    })
+  }
 
   return (
     <SafeAreaView>
+      <SearchBar />
       <FlatList
-        horizontal
+        horizontal={false}
+        style={styles.list}
         keyExtractor={(element) => element.exerciseName}
         data={props.exercises}
         renderItem={(element) => {
-          // console.log('element.item:  ',element.item.exerciseName);
+          console.log('element.item:  ',element.item.exerciseName);
           return (
-            <View style={styles.itemDisplay}>
-              <Text style={styles.text}>{element.item.exerciseName}</Text>
-            </View>
+              <ListCard
+                  imageURL={element.item.anatomyPicture}
+                  name={element.item.exerciseName}
+                  callBack={openCardDetails}
+              />        
+             
           );
         }}
       />
-      <Text>{}</Text>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  text: {
-    color: "white",
-    fontSize: 20,
-    paddingLeft: 13,
-    paddingRight: 13,
-    paddingTop: 13,
+  list: {
+    paddingLeft: 15,
+    paddingTop: 20,
+    paddingRight: 15,
   },
-  itemDisplay: {
-    backgroundColor: 'red'
-  }
 });
 
 // export default SearchScreen;

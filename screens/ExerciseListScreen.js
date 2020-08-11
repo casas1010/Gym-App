@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-navigation";
 import { AntDesign } from "@expo/vector-icons";
 import BackGround from "../components/BackGround";
 
-const WorkOutScreen = (props) => {
+const ExerciseListScreen = (props) => {
   return (
 
         <View>
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
 // const WorkOutScreen =()=> {
 //   return <BackGround  />
 // }
-export default WorkOutScreen;
+export default ExerciseListScreen;

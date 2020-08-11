@@ -6,13 +6,11 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import BackGround from "./components/BackGround";
 import WelcomScreen from "./screens/WelcomScreen";
 import AuthScreen from "./screens/AuthScreen";
-import WorkOutScreen from "./screens/WorkOutScreen";
-import LogsScreen from './screens/LogsScreen';
+import ExerciseListScreen from "./screens/ExerciseListScreen";
+import LogsScreen from "./screens/LogsScreen";
 import SearchScreen from "./screens/SearchScreen";
-// import DeckScreen from "./screens/DeckScreen";
 import SettingsScreen from "./screens/SettingsScreen";
-// import ReviewScreen from "./screens/ReviewScreen";
-import WorkOutList from "./screens/WorkOutList";
+import ExerciseDetailsScreen from "./screens/ExerciseDetailsScreen";
 
 const MainNavigator = createBottomTabNavigator(
   {
@@ -21,22 +19,23 @@ const MainNavigator = createBottomTabNavigator(
     auth: { screen: AuthScreen },
     main: {
       screen: createBottomTabNavigator({
-        WORKOUT: { screen: WorkOutScreen },
+        WORKOUT: { screen: ExerciseListScreen },
         LIST: { screen: SearchScreen },
         LOGS: {
-          screen: createBottomTabNavigator({
-            LOGS: { screen: LogsScreen },
-            // INSERT HIDDEN MENUS BELOW
-            // LIST: { screen: ListScreen },
-          },
-          {
-            defaultNavigationOptions: {
-              tabBarVisible: false,
+          screen: createBottomTabNavigator(
+            {
+              LOGS: { screen: LogsScreen },
+              // INSERT HIDDEN MENUS BELOW
+              DETAILS: { screen: ExerciseDetailsScreen },
             },
-            navigationOptions: {
-              lazy: true,
-            },
-          }
+            {
+              defaultNavigationOptions: {
+                tabBarVisible: false,
+              },
+              navigationOptions: {
+                lazy: true,
+              },
+            }
           ),
         },
       }),
@@ -55,12 +54,21 @@ const MainNavigator = createBottomTabNavigator(
 const App = createAppContainer(MainNavigator);
 import { Provider } from "react-redux";
 import store from "./store";
+import { setNavigator } from "./navigationRef";
 
 export default () => {
   return (
     <Provider store={store}>
       {/* <App /> */}
-      <BackGround elements={<App />} />
+      <BackGround
+        elements={
+          <App
+            ref={(navigator) => {
+              setNavigator(navigator);
+            }}
+          />
+        }
+      />
     </Provider>
   );
 };

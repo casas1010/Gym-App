@@ -5,6 +5,7 @@ const makeTableFromData = (data, numberOfRows) => {
   console.log("processing data initialized");
   let rowArrays = [];
   let rowArraysNotHeader = [];
+  let i = 1;
 
   // MAKE AN ARRAY FOR EVERY ROW (INCLUDING THE HEADER)
   for (let i = 0; i < numberOfRows; i++) {
@@ -26,17 +27,22 @@ const makeTableFromData = (data, numberOfRows) => {
   }
 
   const masterArray = [];
-  let exerciseData = {
-    exerciseName: "",
-    primaryMuscle: "",
-    secondaryMuscle: "",
-    animation: "",
-    equipmentPicture: "",
-    description: "",
-    anatomyPicture: "",
-  };
+
+
   // ASSOCIATE KEY VALUE PAIRS
   rowArraysNotHeader.forEach((array) => {
+    let exerciseData = {
+      exerciseName: "",
+      primaryMuscle: "",
+      secondaryMuscle: "",
+      animation: "",
+      equipmentPicture: "",
+      description: "",
+      anatomyPicture: "",
+    };
+
+    // console.log("this is run number:  ", i);
+    //
     exerciseData.exerciseName = array[0];
     exerciseData.primaryMuscle = array[1];
     exerciseData.secondaryMuscle = array[2];
@@ -46,6 +52,8 @@ const makeTableFromData = (data, numberOfRows) => {
     exerciseData.anatomyPicture = array[6];
     //
     masterArray.push(exerciseData);
+    // console.log('masterArray conent:',masterArray)
+    i++;
   });
   console.log("processing data complete");
 
