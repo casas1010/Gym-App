@@ -40,10 +40,11 @@ const makeTableFromData = (data, numberOfRows) => {
     anatomyPicture: "",
   };
 
+  // ASSOCIATE KEY VALUE PAIRS
   rowArraysNotHeader.forEach((array) => {
-    exerciseData.exerciseName = array[0];   //
-    exerciseData.primaryMuscle = array[1];//
-    exerciseData.secondaryMuscle = array[2];//
+    exerciseData.exerciseName = array[0];   
+    exerciseData.primaryMuscle = array[1];
+    exerciseData.secondaryMuscle = array[2];
     exerciseData.animation = array[3];
     exerciseData.equipmentPicture = array[4];
     exerciseData.description = array[5];
@@ -56,9 +57,6 @@ const makeTableFromData = (data, numberOfRows) => {
     // console.log('equipmentPicture:   ',exerciseData.equipmentPicture);
     // console.log('description:        ',exerciseData.description);
     // console.log('anatomyPicture:     ',exerciseData.anatomyPicture);
-
-
-
     masterArray.push(exerciseData);
   });
 
@@ -85,6 +83,7 @@ export default () => {
       setErrorMessage("Something went wrong");
     }
   };
+  
   console.log("API query complete");
   useEffect(() => {
     searchApi(); // pull all data from cloud, no search term required

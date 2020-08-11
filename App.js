@@ -16,7 +16,7 @@ import WorkOutList from "./screens/WorkOutList";
 
 const MainNavigator = createBottomTabNavigator(
   {
-    LIST: { screen: SearchScreen }, //DELETE ME
+    // LIST: { screen: SearchScreen }, //DELETE ME
     // welcome: { screen: WelcomScreen },
     auth: { screen: AuthScreen },
     main: {

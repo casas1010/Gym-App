@@ -7,6 +7,8 @@ import * as actions from "../actions";
 const AuthScreen = (props) => {
   useEffect(() => {
     props.facebookLogin();
+    console.log('AuthScreen useEffect')
+    props.fetchExercises();
     onAuthComplete(props);
   }, []);
 

@@ -1,63 +1,70 @@
-import React, { useState, useEffect,useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import SearchBar from '../components/SearchBar';
-import useResults from '../hooks/useResults';
-import ResultsList from '../components/ResultsList';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
+import { connect } from "react-redux";
+import * as actions from "../actions/index";
 
-const SearchScreen = () => {
-  const [term, setTerm] = useState('');
-  const [searchApi, results, errorMessage] = useResults();
-  const isInitialMount = useRef(true);
+import SearchBar from "../components/SearchBar";
+import useResults from "../hooks/useResults";
+import ResultsList from "../components/ResultsList";
+
+const SearchScreen = (props) => {
+  // const [data,setData]= useState();
 
   useEffect(() => {
-    if (isInitialMount.current) {
-       isInitialMount.current = false;
-    } else {
-      // console.log('results:  ',results.exerciseNames )
-    }
-  },[results]);
+    // props.fetchExercises();
+    // setData(props.exercises)
+    // console.log("useEffect");
+    // console.log(props.exercises);
+    // console.log('exercises.exercises',exercises.exercises)
+  }, []);
 
- 
-
-  // const filterResultsByName = name => {
-  //   return results.filter(result => {
-  //     return result.name === name;
-  //   });
-  // };
+  // return(
+  //   <Text>hi</Text>
+  // )
 
   return (
-    <>
-      <SearchBar
-        term={term}
-        onTermChange={setTerm}
-        onTermSubmit={() => searchApi(term)}
+    <SafeAreaView>
+      <FlatList
+        horizontal
+        keyExtractor={(element) => element.exerciseName}
+        data={props.exercises}
+        renderItem={(element) => {
+          // console.log('element.item:  ',element.item.exerciseName);
+          return (
+            <View style={styles.itemDisplay}>
+              <Text style={styles.text}>{element.item.exerciseName}</Text>
+            </View>
+          );
+        }}
       />
-      {errorMessage ? <Text>{errorMessage}</Text> : null}
-      <ScrollView>
-
-
-      <ResultsList
-          results={results.data}
-          title={'All exercises'}
-      />
-
-
-
-
-        {/* <ResultsList
-          results={filterResultsByPrice('$')}
-          title="Cost Effective"
-        />
-        <ResultsList results={filterResultsByPrice('$$')} title="Bit Pricier" />
-        <ResultsList
-          results={filterResultsByPrice('$$$')}
-          title="Big Spender"
-        /> */}
-      </ScrollView>
-    </>
+      <Text>{}</Text>
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  text: {
+    color: "white",
+    fontSize: 20,
+    paddingLeft: 13,
+    paddingRight: 13,
+    paddingTop: 13,
+  },
+  itemDisplay: {
+    backgroundColor: 'red'
+  }
+});
 
-export default SearchScreen;
+// export default SearchScreen;
+function mapStateToProps({ auth, exercise }) {
+  return { exercises: exercise.exercises };
+}
+
+export default connect(mapStateToProps, actions)(SearchScreen);
