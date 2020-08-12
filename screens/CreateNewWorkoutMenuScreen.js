@@ -6,6 +6,7 @@ import {
   Dimensions,
   SafeAreaView,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 
 import { BlurView } from "expo-blur";
@@ -19,13 +20,13 @@ import TopMenu from "../components/TopMenu";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const BUTTON_WIDTH = SCREEN_WIDTH * 0.2;
 
 const OPTIONS = [
   {
     title: "Generate your next workout",
     details: "Create a complete workout from your muscle state & gym settings.",
     logo: <Ionicons name="ios-body" size={40} color="black" />,
+    // destination: 
   },
   {
     title: "Target individual muscle groups",
@@ -42,7 +43,7 @@ const OPTIONS = [
   {
     title: "Create a workout from scratch",
     details: "Compose your workout by selecting individual exercises",
-    logo: <Entypo name="add-to-list" size={40} color="black" />,
+    logo: <Entypo name="add-to-list" size={30} color="black" />,
   },
 ];
 
@@ -61,11 +62,22 @@ const CreateNewWorkoutMenuScreen = (props) => {
         renderItem={(element) => {
           // console.log("element.item:  ", element.item);
           return (
+            <TouchableOpacity>
             <View style={styles.displayCard}>
-              {element.item.logo}
-              <Text>{element.item.title}</Text>
-              <Ionicons name="ios-arrow-forward" size={40} color="black" />
+              <View style={styles.logo}>{element.item.logo}</View>
+              <View style={styles.textContainer}>
+                <Text style={styles.text}>{element.item.title}</Text>
+              </View>
+              <View style={styles.textContainer}>
+                <Ionicons
+                  style={styles.icon}
+                  name="ios-arrow-forward"
+                  size={20}
+                  color="black"
+                />
+              </View>
             </View>
+            </TouchableOpacity>
           );
         }}
       />
@@ -75,6 +87,12 @@ const CreateNewWorkoutMenuScreen = (props) => {
 const styles = StyleSheet.create({
   displayCard: {
     flexDirection: "row",
+    // paddingTop: 30,
+    // backgroundColor:'red',
+
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", // Centered horizontally
+    flex: 1,
   },
   topMenu: {
     flexDirection: "row",
@@ -82,8 +100,33 @@ const styles = StyleSheet.create({
   nonBlurredContent: {
     paddingTop: 30,
   },
+  textContainer: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#000c23",
+    height: "100%",
+    // backgroundColor:'green',
+    justifyContent: "center",
+    paddingBottom:30,
+    paddingTop:30
+  },
+  logo: {
+    width: SCREEN_WIDTH * (2 / 10),
+    alignItems: "center",
+
+  },
   text: {
-    color: "white",
+    width: SCREEN_WIDTH * (7 / 10),
+    fontSize: 16,
+    // backgroundColor:'red'
+  },
+  icon: {
+    width: SCREEN_WIDTH * (1 / 10),
+    // backgroundColor:'green',
+
+    alignItems: "center",
+paddingLeft:8,
+    borderBottomWidth: 1,
+    borderBottomColor: "blue",
   },
 });
 

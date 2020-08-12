@@ -9,6 +9,7 @@ const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
 const PickedExercisesScreen = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
+   
 
   const changeModal = () => {
     setModalOpen(false);
@@ -18,7 +19,7 @@ const PickedExercisesScreen = (props) => {
      <BackGround>
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to the React Native Playground!
+          THIS IS THE WINDOW THAT SHOWS THE EXERCISES YOU HAVED PICKED!
         </Text>
         <Button title="turn on Modal" onPress={() => setModalOpen(true)} />
         <Modal animationType="fade" transparent={true} visible={modalOpen}>
