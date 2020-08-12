@@ -25,7 +25,7 @@ const Background = (props) => {
         }}
       />
       <StatusBar style="light" />
-      {props.elements}
+      {props.children}
     </View>
   );
 };

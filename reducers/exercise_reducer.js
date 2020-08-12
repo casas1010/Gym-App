@@ -2,9 +2,7 @@ import { FETCH_EXERCISES } from "../actions/types";
 
 const exerciseReducer = (state = {}, action) => {
   switch (action.type) {
-    case FETCH_EXERCISES:
-      // console.log('inside reducer')
-      
+    case FETCH_EXERCISES:      
       return { exercises: action.payload };
     default:
       return state;

@@ -11,32 +11,24 @@ import LogsScreen from "./screens/LogsScreen";
 import SearchScreen from "./screens/SearchScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import ExerciseDetailsScreen from "./screens/ExerciseDetailsScreen";
+import PickedExercisesScreen from "./screens/PickedExercisesScreen";
+import CreateNewWorkoutMenuScreen from "./screens/CreateNewWorkoutMenuScreen.js";
 
 const MainNavigator = createBottomTabNavigator(
   {
-    // LIST: { screen: SearchScreen }, //DELETE ME
-    // welcome: { screen: WelcomScreen },
+    // welcome: { screen: WelcomeScreen },
     auth: { screen: AuthScreen },
     main: {
       screen: createBottomTabNavigator({
-        WORKOUT: { screen: ExerciseListScreen },
-        LIST: { screen: SearchScreen },
-        LOGS: {
-          screen: createBottomTabNavigator(
-            {
-              LOGS: { screen: LogsScreen },
-              // INSERT HIDDEN MENUS BELOW
-              DETAILS: { screen: ExerciseDetailsScreen },
-            },
-            {
-              defaultNavigationOptions: {
-                tabBarVisible: false,
-              },
-              navigationOptions: {
-                lazy: true,
-              },
-            }
-          ),
+        map: { screen: LogsScreen },
+        deck: { screen: LogsScreen },
+        WORKOUT: {
+          screen: createStackNavigator({
+            WORKOUT: { screen: PickedExercisesScreen },
+            CreateNewWorkoutMenuScreen: { screen: CreateNewWorkoutMenuScreen },
+            search: { screen: SearchScreen },
+            details: { screen: ExerciseDetailsScreen },
+          }),
         },
       }),
     },
@@ -59,16 +51,13 @@ import { setNavigator } from "./navigationRef";
 export default () => {
   return (
     <Provider store={store}>
-      {/* <App /> */}
-      <BackGround
-        elements={
-          <App
-            ref={(navigator) => {
-              setNavigator(navigator);
-            }}
-          />
-        }
-      />
+      <BackGround>
+        <App
+          ref={(navigator) => {
+            setNavigator(navigator);
+          }}
+        />
+      </BackGround>
     </Provider>
   );
 };
