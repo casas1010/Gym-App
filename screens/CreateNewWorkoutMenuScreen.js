@@ -26,28 +26,38 @@ const OPTIONS = [
     title: "Generate your next workout",
     details: "Create a complete workout from your muscle state & gym settings.",
     logo: <Ionicons name="ios-body" size={40} color="black" />,
-    // destination: 
+    destination: "search",
   },
   {
     title: "Target individual muscle groups",
     details:
       "Generate a workout that targets the muscle groups of your choice.",
     logo: <MaterialCommunityIcons name="target" size={40} color="black" />,
+    destination: "search",
   },
   {
     title: "Pick a starting exercise",
     details:
       "Select one or more and let Pootie Tang fill in the rest of your workout.",
     logo: <MaterialCommunityIcons name="pickaxe" size={40} color="black" />,
+    destination: "search",
   },
   {
     title: "Create a workout from scratch",
     details: "Compose your workout by selecting individual exercises",
     logo: <Entypo name="add-to-list" size={30} color="black" />,
+    destination: "search",
   },
 ];
 
 const CreateNewWorkoutMenuScreen = (props) => {
+
+  const goToDifferentScreen =(destination) =>{
+    props.callBack()
+    props.navigation.navigate(destination);
+  }
+
+
   return (
     <BlurView
       intensity={100}
@@ -62,21 +72,21 @@ const CreateNewWorkoutMenuScreen = (props) => {
         renderItem={(element) => {
           // console.log("element.item:  ", element.item);
           return (
-            <TouchableOpacity>
-            <View style={styles.displayCard}>
-              <View style={styles.logo}>{element.item.logo}</View>
-              <View style={styles.textContainer}>
-                <Text style={styles.text}>{element.item.title}</Text>
+            <TouchableOpacity onPress={() => goToDifferentScreen(element.item.destination)}>
+              <View style={styles.displayCard}>
+                <View style={styles.logo}>{element.item.logo}</View>
+                <View style={styles.textContainer}>
+                  <Text style={styles.text}>{element.item.title}</Text>
+                </View>
+                <View style={styles.textContainer}>
+                  <Ionicons
+                    style={styles.icon}
+                    name="ios-arrow-forward"
+                    size={20}
+                    color="black"
+                  />
+                </View>
               </View>
-              <View style={styles.textContainer}>
-                <Ionicons
-                  style={styles.icon}
-                  name="ios-arrow-forward"
-                  size={20}
-                  color="black"
-                />
-              </View>
-            </View>
             </TouchableOpacity>
           );
         }}
@@ -106,13 +116,12 @@ const styles = StyleSheet.create({
     height: "100%",
     // backgroundColor:'green',
     justifyContent: "center",
-    paddingBottom:30,
-    paddingTop:30
+    paddingBottom: 30,
+    paddingTop: 30,
   },
   logo: {
     width: SCREEN_WIDTH * (2 / 10),
     alignItems: "center",
-
   },
   text: {
     width: SCREEN_WIDTH * (7 / 10),
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
     // backgroundColor:'green',
 
     alignItems: "center",
-paddingLeft:8,
+    paddingLeft: 8,
     borderBottomWidth: 1,
     borderBottomColor: "blue",
   },

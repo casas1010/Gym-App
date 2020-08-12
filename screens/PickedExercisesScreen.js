@@ -7,12 +7,13 @@ import BackGround from "../components/BackGround";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
-const PickedExercisesScreen = (props) => {
+const PickedExercisesScreen = ({navigation}) => {
   const [modalOpen, setModalOpen] = useState(false);
    
 
   const changeModal = () => {
     setModalOpen(false);
+    
   };
 
   return (
@@ -23,7 +24,7 @@ const PickedExercisesScreen = (props) => {
         </Text>
         <Button title="turn on Modal" onPress={() => setModalOpen(true)} />
         <Modal animationType="fade" transparent={true} visible={modalOpen}>
-          <CreateNewWorkoutMenuScreen callBack={changeModal} />
+          <CreateNewWorkoutMenuScreen callBack={changeModal} navigation={navigation} />
         </Modal>
       </View>
     </BackGround>

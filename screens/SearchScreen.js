@@ -21,15 +21,12 @@ import ResultsList from "../components/ResultsList";
 import ListCard from "../components/ListCard";
 import BackGround from "../components/BackGround";
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const BUTTON_WIDTH = SCREEN_WIDTH * 0.30;
+const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
 // PULL ALLL IMAGES FROM HERE: https://www.britannica.com/science/human-muscle-system/The-abdomen
 
 const SearchScreen = (props) => {
-  // useEffect(() => {
-  //   // console.log(props.exercises);
-  //   // console.log('exercises.exercises',exercises.exercises)
-  // }, []);
+  const [term, setTerm] = useState("");
 
   const openCardDetails = (name) => {
     console.log(`card ${name} has been clicked!`);
@@ -38,10 +35,23 @@ const SearchScreen = (props) => {
     });
   };
 
+  const filterExercisesByName = (name) => {
+    return props.exercises.filter((result) => {
+      return result.exerciseName.toLowerCase() == name.toLowerCase();
+    });
+  };
+
   return (
     <BackGround>
       <SafeAreaView>
-        <SearchBar />
+        <SearchBar
+          term={term}
+          onTermChange={setTerm}
+          onTermSubmit={() => {
+            console.log(`term searched is ${term}`);
+            console.log( filterExercisesByName('Ab Rollout'))
+          }}
+        />
         <FlatList
           horizontal={false}
           style={styles.list}
@@ -70,8 +80,6 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
 });
-
-
 
 SearchScreen.navigationOptions = (props) => ({
   title: "",
