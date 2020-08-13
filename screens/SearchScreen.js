@@ -47,14 +47,14 @@ const SearchScreen = (props) => {
           // console.log(filterExercisesByName(term));
         }}
       />
-      <ScrollView>
+      {/* <ScrollView> */}
         <ResultsList
           allResults={props.exercises}
           results={filterExercisesByName(term)}
           navigation={props.navigation}
-          style={{ flex: 1 }}
+          // style={{ flex: 1 }}
         />
-      </ScrollView>
+      {/* </ScrollView> */}
     </BackGround>
   );
 };

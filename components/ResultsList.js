@@ -43,7 +43,6 @@ const ResultsList = ({ results, navigation, allResults }) => {
   }
 
   return (
-    <View style={styles.container}>
       <FlatList
         horizontal={false}
         showsHorizontalScrollIndicator={false}
@@ -64,7 +63,6 @@ const ResultsList = ({ results, navigation, allResults }) => {
           );
         }}
       />
-    </View>
   );
 };
 
