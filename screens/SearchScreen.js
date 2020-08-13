@@ -132,6 +132,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  TouchableOpacityBase,
 } from "react-native";
 import { Button } from "react-native-elements";
 
@@ -150,14 +151,14 @@ const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 // PULL ALLL IMAGES FROM HERE: https://www.britannica.com/science/human-muscle-system/The-abdomen
 
 const SearchScreen = (props) => {
-  const [term, setTerm] = useState("Ab Rollout");
+  const [term, setTerm] = useState("");
 
-  const openCardDetails = (name) => {
-    console.log(`card ${name} has been clicked!`);
-    props.navigation.navigate("details", {
-      name: name,
-    });
-  };
+  // const openCardDetails = (name) => {
+  //   console.log(`card ${name} has been clicked!`);
+  //   props.navigation.navigate("details", {
+  //     name: name,
+  //   });
+  // };
 
   const filterExercisesByName = (name) => {
     name = name.toLowerCase();
@@ -174,10 +175,16 @@ const SearchScreen = (props) => {
           onTermChange={setTerm}
           onTermSubmit={() => {
             console.log(`term searched is ${term}`);
-            console.log(filterExercisesByName(term));
-          }} 
+            console.log(filterExercisesByName(term)[0]);
+          }}
         />
-        <ResultsList results={filterExercisesByName(term)} navigation={props.navigation} />
+        <Text>TERM:  {term}</Text>
+        <ResultsList
+          allResults={props.exercises}
+          results={filterExercisesByName(term)}
+          navigation={props.navigation}
+          style={{flex:1}}
+        />
       </SafeAreaView>
     </BackGround>
   );

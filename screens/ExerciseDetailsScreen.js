@@ -15,43 +15,29 @@ import { connect } from "react-redux";
 import BackGround from "../components/BackGround";
 
 const ExerciseDetailsScreen = (props) => {
-  const [data, setData] = useState({});
-
+  
   useEffect(() => {
-    filterResultsByName(props.navigation.state.params.name);
-  }, []);
-
-  const filterResultsByName = (name) => {
-    console.log(`querying databse for ${name}`);
-    props.exercises.filter((result) => {
-      if (result.exerciseName === name) {
-        //
-        //
-        console.log(`obj match found for ${name}`);
-        // console.log('obj composition:  ',result)
-        setData(result);
-      }
-    });
-  };
+    console.log('props.exercises[0]:',props.exercises[0])
+  }, [])
 
   return (
     <BackGround>
       <ScrollView>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}> {data.exerciseName}</Text>
-          <Text style={styles.subTitle}>{data.primaryMuscle}</Text>
+          <Text style={styles.title}> {props.exercises[0].exerciseName}</Text>
+          <Text style={styles.subTitle}>{props.exercises[0].primaryMuscle}</Text>
         </View>
         <View style={styles.videoContiner}>
           <Text>VIDEO GOES HERE</Text>
         </View>
-        <Text style={styles.description}>{data.description}</Text>
+        <Text style={styles.description}>{props.exercises[0].description}</Text>
         <View style={styles.muscleDescriptionContainer}>
-          <Text style={styles.muscleDescription}>{data.primaryMuscle}</Text>
-          <Text style={styles.muscleDescription}>{data.secondaryMuscle}</Text>
+          <Text style={styles.muscleDescription}>{props.exercises[0].primaryMuscle}</Text>
+          <Text style={styles.muscleDescription}>{props.exercises[0].secondaryMuscle}</Text>
         </View>
         <Image
           style={styles.machineImage}
-          source={{ uri: data.anatomyPicture }}
+          source={{ uri: props.exercises[0].anatomyPicture }}
         />
       </ScrollView>
     </BackGround>
