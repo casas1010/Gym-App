@@ -11,11 +11,35 @@ import ListCard from "./ListCard";
 
 const ResultsList = ({ results, navigation, allResults }) => {
   useEffect(() => {
-    console.log("results.length:  ", results.length);
+    // console.log("results.length:  ", results.length);
   }, [results]);
 
   if (!results.length) {
-    return null;
+    // return null;
+    return (
+      <View style={styles.container}>
+        <FlatList
+          horizontal={false}
+          showsHorizontalScrollIndicator={false}
+          data={allResults}
+          keyExtractor={(result) => result.exerciseName}
+          renderItem={({ item }) => {
+            return (
+              <ListCard
+                anatomyPicture={item.anatomyPicture}
+                animation={item.animation}
+                description={item.description}
+                equipmentPicture={item.equipmentPicture}
+                exerciseName={item.exerciseName}
+                primaryMuscle={item.primaryMuscle}
+                secondaryMuscle={item.secondaryMuscle}
+                callBack={navigation.navigate}
+              />
+            );
+          }}
+        />
+      </View>
+    );
   }
 
   return (
@@ -28,13 +52,13 @@ const ResultsList = ({ results, navigation, allResults }) => {
         renderItem={({ item }) => {
           return (
             <ListCard
-            anatomyPicture={item.anatomyPicture}
-            animation={item.animation}
-            description={item.description}
-            equipmentPicture={item.equipmentPicture}
-            exerciseName={item.exerciseName}
-            primaryMuscle={item.primaryMuscle}
-            secondaryMuscle={item.secondaryMuscle}
+              anatomyPicture={item.anatomyPicture}
+              animation={item.animation}
+              description={item.description}
+              equipmentPicture={item.equipmentPicture}
+              exerciseName={item.exerciseName}
+              primaryMuscle={item.primaryMuscle}
+              secondaryMuscle={item.secondaryMuscle}
               callBack={navigation.navigate}
             />
           );

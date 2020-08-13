@@ -15,6 +15,8 @@ import { connect } from "react-redux";
 import BackGround from "../components/BackGround";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+
 const CONTAINER_WIDTH = SCREEN_WIDTH * 0.5;
 
 const ExerciseDetailsScreen = (props) => {
@@ -28,28 +30,42 @@ const ExerciseDetailsScreen = (props) => {
     secondaryMuscle,
   } = props.navigation.state.params;
 
-  useEffect(() => {
-    // console.log("ExerciseDetailsScreen");
-    // console.log(
-    //   "props.navigation.state.params:",
-    //   props.navigation.state.params
-    // );
-    console.log(
-      "secondaryMuscle:  ",
-      secondaryMuscle.replace(/\s/g, "").split(",")
-    );
-  });
+
   const secondaryMusclesRender = () => {
-    let i = -1;
     return secondaryMuscle
       .replace(/\s/g, "")
       .split(",")
       .map((item) => {
-        i++;
         return (
           <Text key={item} style={styles.muscleSubTitleText}>
             {item}
           </Text>
+        );
+      });
+  };
+
+  const equipmentImageRender = () => {
+    const numberOfImages = equipmentPicture.split(",").length;
+    const height= SCREEN_HEIGHT/5;
+    const width= SCREEN_WIDTH/ (numberOfImages+1)
+
+    return equipmentPicture
+      .replace(/\s/g, "")
+      .split(",")
+      .map((item) => {
+        // console.log("item: ", item);
+        // console.log("lenght: ", numberOfImages);
+        return (
+          <Image
+            key={item}
+            style={{
+              height: height,
+              width: width,
+              marginLeft: 10,
+              marginRight: 10,
+            }}
+            source={{ uri: item }}
+          />
         );
       });
   };
@@ -63,28 +79,21 @@ const ExerciseDetailsScreen = (props) => {
             style={styles.subTitle}
           >{`${primaryMuscle}, ${secondaryMuscle}`}</Text>
         </View>
+
         <View style={styles.videoContiner}></View>
         <View style={styles.equipmentImageContainer}>
-          <Image
-            style={styles.equipmentImage}
-            source={{ uri: equipmentPicture }}
-          />
+          {equipmentImageRender()}
         </View>
 
         <Text style={styles.description}>{description}</Text>
 
         <View style={styles.muscleDescriptionContainer}>
-
-
-
           <View style={styles.leftContainer}>
             <Text style={styles.muscleTitleText}>Primary</Text>
             <Text style={styles.muscleSubTitleText}>{primaryMuscle}</Text>
           </View>
 
-
           <View style={styles.rightContainer}>
-
             <Text style={styles.muscleTitleText}>Secondary</Text>
             <View
               style={{
@@ -116,13 +125,10 @@ const styles = StyleSheet.create({
   },
   videoContiner: {},
   equipmentImageContainer: {
+    flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
-    width: CONTAINER_WIDTH,
-  },
-  equipmentImage: {
-    height: 50,
-    width: 50,
+    width: SCREEN_WIDTH,
+    backgroundColor: "#000c23",
   },
   description: {
     fontSize: 20,
@@ -135,7 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   leftContainer: {
-    // backgroundColor: "red",
     width: CONTAINER_WIDTH,
   },
 
@@ -156,31 +161,6 @@ const styles = StyleSheet.create({
     width: CONTAINER_WIDTH,
   },
 
-  // muscleDescriptionTitleContainer: {
-  //   // textAlign:'center',
-  //   flexDirection: "row",
-  // },
-  // muscleTitleText: {
-  //   textAlign: "center",
-
-  //   backgroundColor: "red",
-  //   width: SCREEN_WIDTH * 0.5,
-  // },
-  // primarymuscleDescription: {
-  //   fontSize: 20,
-  //   color: "#b3b3b3",
-  // },
-  // secondaryMuscleDescription: {
-  //   fontSize: 20,
-  //   color: "#b3b3b3",
-  // },
-  // equipmentImage: {},
 });
 
 export default ExerciseDetailsScreen;
-
-// function mapStateToProps({ auth, exercise }) {
-//   return { exercises: exercise.exercises };
-// }
-
-// export default connect(mapStateToProps, null)(ExerciseDetailsScreen);

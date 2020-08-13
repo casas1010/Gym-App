@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -35,29 +33,28 @@ const SearchScreen = (props) => {
   const filterExercisesByName = (name) => {
     name = name.toLowerCase();
     return props.exercises.filter((result) => {
-      return result.exerciseName.toLowerCase() == name;
+      return result.exerciseName.toLowerCase().includes(name);
     });
   };
 
   return (
     <BackGround>
-      <SafeAreaView>
-        <SearchBar
-          term={term}
-          onTermChange={setTerm}
-          onTermSubmit={() => {
-            console.log(`term searched is ${term}`);
-            console.log(filterExercisesByName(term));
-          }}
-        />
-        <Text>TERM:  {term}</Text>
+      <SearchBar
+        term={term}
+        onTermChange={setTerm}
+        onTermSubmit={() => {
+          // console.log(`term searched is ${term}`);
+          // console.log(filterExercisesByName(term));
+        }}
+      />
+      <ScrollView>
         <ResultsList
           allResults={props.exercises}
           results={filterExercisesByName(term)}
           navigation={props.navigation}
-          style={{flex:1}}
+          style={{ flex: 1 }}
         />
-      </SafeAreaView>
+      </ScrollView>
     </BackGround>
   );
 };
