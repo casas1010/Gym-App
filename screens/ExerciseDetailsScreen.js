@@ -29,12 +29,30 @@ const ExerciseDetailsScreen = (props) => {
   } = props.navigation.state.params;
 
   useEffect(() => {
-    console.log("ExerciseDetailsScreen");
+    // console.log("ExerciseDetailsScreen");
+    // console.log(
+    //   "props.navigation.state.params:",
+    //   props.navigation.state.params
+    // );
     console.log(
-      "props.navigation.state.params:",
-      props.navigation.state.params
+      "secondaryMuscle:  ",
+      secondaryMuscle.replace(/\s/g, "").split(",")
     );
   });
+  const secondaryMusclesRender = () => {
+    let i = -1;
+    return secondaryMuscle
+      .replace(/\s/g, "")
+      .split(",")
+      .map((item) => {
+        i++;
+        return (
+          <Text key={item} style={styles.muscleSubTitleText}>
+            {item}
+          </Text>
+        );
+      });
+  };
 
   return (
     <BackGround>
@@ -45,12 +63,7 @@ const ExerciseDetailsScreen = (props) => {
             style={styles.subTitle}
           >{`${primaryMuscle}, ${secondaryMuscle}`}</Text>
         </View>
-        <View style={styles.videoContiner}>
-          <Text>VIDEO GOES HERE</Text>
-          <Text>VIDEO GOES HERE</Text>
-          <Text>VIDEO GOES HERE</Text>
-          <Text>VIDEO GOES HERE</Text>
-        </View>
+        <View style={styles.videoContiner}></View>
         <View style={styles.equipmentImageContainer}>
           <Image
             style={styles.equipmentImage}
@@ -61,23 +74,31 @@ const ExerciseDetailsScreen = (props) => {
         <Text style={styles.description}>{description}</Text>
 
         <View style={styles.muscleDescriptionContainer}>
+
+
+
           <View style={styles.leftContainer}>
-            {/* <View style={{ width: '70%'}}> */}
             <Text style={styles.muscleTitleText}>Primary</Text>
             <Text style={styles.muscleSubTitleText}>{primaryMuscle}</Text>
-            {/* </View> */}
           </View>
+
+
           <View style={styles.rightContainer}>
+
             <Text style={styles.muscleTitleText}>Secondary</Text>
-            <Text style={styles.muscleSubTitleText}>{secondaryMuscle}</Text>
+            <View
+              style={{
+                flexDirection: "column",
+              }}
+            >
+              {secondaryMusclesRender()}
+            </View>
           </View>
         </View>
       </ScrollView>
     </BackGround>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   titleContainer: {
@@ -97,7 +118,7 @@ const styles = StyleSheet.create({
   equipmentImageContainer: {
     justifyContent: "center",
     alignItems: "center",
-    width: CONTAINER_WIDTH 
+    width: CONTAINER_WIDTH,
   },
   equipmentImage: {
     height: 50,
@@ -112,7 +133,6 @@ const styles = StyleSheet.create({
   muscleDescriptionContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
   },
   leftContainer: {
     // backgroundColor: "red",
@@ -132,6 +152,7 @@ const styles = StyleSheet.create({
 
   rightContainer: {
     // backgroundColor: "blue",
+    // flexDirection:'column',
     width: CONTAINER_WIDTH,
   },
 
