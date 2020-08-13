@@ -14,20 +14,37 @@ import { Feather } from "@expo/vector-icons";
 const MAX_LIM = 15;
 const WIDTH = Dimensions.get("window").width * 0.95;
 
-const ListCard = ({ imageURL, name, callBack,data }) => {
+const ListCard = ({
+  anatomyPicture,
+  animation,
+  description,
+  equipmentPicture,
+  exerciseName,
+  primaryMuscle,
+  secondaryMuscle,
+  callBack,
+}) => {
   return (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => {
         // callBack(name);
-        console.log('callBack()')
-        console.log('data: ',data)
-        callBack('details',data)
+        console.log("ListCard callback");
+        console.log("exerciseName: ", exerciseName);
+        callBack("details", {
+          anatomyPicture,
+          animation,
+          description,
+          equipmentPicture,
+          exerciseName,
+          primaryMuscle,
+          secondaryMuscle,
+        });
       }}
     >
-      <Image style={styles.image} source={{ uri: imageURL }} alt={name} />
+      <Image style={styles.image} source={{ uri: anatomyPicture }} alt={exerciseName} />
       <View style={styles.textContainer}>
-        <Text style={styles.nameText}>{name}</Text>
+        <Text style={styles.nameText}>{exerciseName}</Text>
       </View>
     </TouchableOpacity>
   );

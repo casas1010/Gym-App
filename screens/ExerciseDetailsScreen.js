@@ -9,60 +9,77 @@ import {
   SafeAreaView,
   ScrollView,
   Button,
+  Dimensions,
 } from "react-native";
-import axios from "axios";
 import { connect } from "react-redux";
 import BackGround from "../components/BackGround";
 
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const CONTAINER_WIDTH = SCREEN_WIDTH * 0.5;
+
 const ExerciseDetailsScreen = (props) => {
-  
+  const {
+    anatomyPicture,
+    animation,
+    description,
+    equipmentPicture,
+    exerciseName,
+    primaryMuscle,
+    secondaryMuscle,
+  } = props.navigation.state.params;
+
   useEffect(() => {
-    console.log('props.exercises[0]:',props.exercises[0])
-  }, [])
+    console.log("ExerciseDetailsScreen");
+    console.log(
+      "props.navigation.state.params:",
+      props.navigation.state.params
+    );
+  });
 
   return (
     <BackGround>
       <ScrollView>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}> {props.exercises[0].exerciseName}</Text>
-          <Text style={styles.subTitle}>{props.exercises[0].primaryMuscle}</Text>
+          <Text style={styles.title}> {exerciseName}</Text>
+          <Text
+            style={styles.subTitle}
+          >{`${primaryMuscle}, ${secondaryMuscle}`}</Text>
         </View>
         <View style={styles.videoContiner}>
           <Text>VIDEO GOES HERE</Text>
+          <Text>VIDEO GOES HERE</Text>
+          <Text>VIDEO GOES HERE</Text>
+          <Text>VIDEO GOES HERE</Text>
         </View>
-        <Text style={styles.description}>{props.exercises[0].description}</Text>
+        <View style={styles.equipmentImageContainer}>
+          <Image
+            style={styles.equipmentImage}
+            source={{ uri: equipmentPicture }}
+          />
+        </View>
+
+        <Text style={styles.description}>{description}</Text>
+
         <View style={styles.muscleDescriptionContainer}>
-          <Text style={styles.muscleDescription}>{props.exercises[0].primaryMuscle}</Text>
-          <Text style={styles.muscleDescription}>{props.exercises[0].secondaryMuscle}</Text>
+          <View style={styles.leftContainer}>
+            {/* <View style={{ width: '70%'}}> */}
+            <Text style={styles.muscleTitleText}>Primary</Text>
+            <Text style={styles.muscleSubTitleText}>{primaryMuscle}</Text>
+            {/* </View> */}
+          </View>
+          <View style={styles.rightContainer}>
+            <Text style={styles.muscleTitleText}>Secondary</Text>
+            <Text style={styles.muscleSubTitleText}>{secondaryMuscle}</Text>
+          </View>
         </View>
-        <Image
-          style={styles.machineImage}
-          source={{ uri: props.exercises[0].anatomyPicture }}
-        />
       </ScrollView>
     </BackGround>
   );
 };
 
-// ExerciseDetailsScreen.navigationOptions = (props) => ({
-//   title: "Review Jobs",
-//   headerRight: () => (
-//     <Button
-//       title="Settings"
-//       onPress={() => {
-//             props.navigation.navigate('details')
-//       }}
-//     />
-//   ),
-// });
-
 
 
 const styles = StyleSheet.create({
-  description:{
-    fontSize: 20,
-    color: "#bfbfbf",
-  },
   titleContainer: {
     marginLeft: 25,
     marginBottom: 25,
@@ -72,25 +89,77 @@ const styles = StyleSheet.create({
     color: "white",
     marginBottom: 15,
   },
-  equipmentPicture: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-    borderWidth: 1,
-    marginLeft: 7,
-  },
   subTitle: {
     fontSize: 20,
     color: "#b3b3b3",
   },
-  itemContainer: {
-    backgroundColor: "red",
+  videoContiner: {},
+  equipmentImageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: CONTAINER_WIDTH 
   },
+  equipmentImage: {
+    height: 50,
+    width: 50,
+  },
+  description: {
+    fontSize: 20,
+    color: "#bfbfbf",
+    marginLeft: 25,
+    marginBottom: 25,
+  },
+  muscleDescriptionContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  leftContainer: {
+    // backgroundColor: "red",
+    width: CONTAINER_WIDTH,
+  },
+
+  muscleTitleText: {
+    fontSize: 15,
+    color: "#b3b3b3",
+    textAlign: "center",
+  },
+  muscleSubTitleText: {
+    fontSize: 10,
+    color: "white",
+    textAlign: "center",
+  },
+
+  rightContainer: {
+    // backgroundColor: "blue",
+    width: CONTAINER_WIDTH,
+  },
+
+  // muscleDescriptionTitleContainer: {
+  //   // textAlign:'center',
+  //   flexDirection: "row",
+  // },
+  // muscleTitleText: {
+  //   textAlign: "center",
+
+  //   backgroundColor: "red",
+  //   width: SCREEN_WIDTH * 0.5,
+  // },
+  // primarymuscleDescription: {
+  //   fontSize: 20,
+  //   color: "#b3b3b3",
+  // },
+  // secondaryMuscleDescription: {
+  //   fontSize: 20,
+  //   color: "#b3b3b3",
+  // },
+  // equipmentImage: {},
 });
 
-function mapStateToProps({ auth, exercise }) {
-  return { exercises: exercise.exercises };
-}
+export default ExerciseDetailsScreen;
 
-// export default ExerciseDetailsScreen;
-export default connect(mapStateToProps, null)(ExerciseDetailsScreen);
+// function mapStateToProps({ auth, exercise }) {
+//   return { exercises: exercise.exercises };
+// }
+
+// export default connect(mapStateToProps, null)(ExerciseDetailsScreen);

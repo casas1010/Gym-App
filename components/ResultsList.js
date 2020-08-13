@@ -8,41 +8,14 @@ import {
 } from "react-native";
 
 import ListCard from "./ListCard";
-{
-  /* <TouchableOpacity
-onPress={() =>
-  navigation.navigate(ite)
-}
->
-</TouchableOpacity> */
-}
 
 const ResultsList = ({ results, navigation, allResults }) => {
   useEffect(() => {
-    console.log('results.length:  ',results.length)
-  });
+    console.log("results.length:  ", results.length);
+  }, [results]);
 
   if (!results.length) {
-    // return null;
-    return (
-      <FlatList
-        horizontal={false}
-        showsHorizontal
-        ScrollIndicator={false}
-        data={allResults}
-        keyExtractor={(result) => result.exerciseName}
-        renderItem={({ item }) => {
-          return (
-            <ListCard
-              imageURL={item.anatomyPicture}
-              name={item.exerciseName}
-              callBack={navigation.navigate}
-              data={results}
-            />
-          );
-        }}
-      />
-    );
+    return null;
   }
 
   return (
@@ -55,10 +28,14 @@ const ResultsList = ({ results, navigation, allResults }) => {
         renderItem={({ item }) => {
           return (
             <ListCard
-              imageURL={item.anatomyPicture}
-              name={item.exerciseName}
+            anatomyPicture={item.anatomyPicture}
+            animation={item.animation}
+            description={item.description}
+            equipmentPicture={item.equipmentPicture}
+            exerciseName={item.exerciseName}
+            primaryMuscle={item.primaryMuscle}
+            secondaryMuscle={item.secondaryMuscle}
               callBack={navigation.navigate}
-              data={results}
             />
           );
         }}
