@@ -12,11 +12,12 @@ const TopMenu = (props) => {
     <View style={styles.topMenu}>
       <Button
         // title="turn off Modal"
-        icon={<AntDesign name="infocirlceo" size={24} color="white" />}
+        icon={<AntDesign name="infocirlceo" size={24} color={props.iColor} />}
         textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
         buttonStyle={{ backgroundColor: "transparent", width: BUTTON_WIDTH }}
         onPress={() => {
-          props.callBack();
+          props.changeDetails();
+          console.log('i button clicked!')
         }}
       />
       <ButtonGroup
@@ -37,7 +38,8 @@ const TopMenu = (props) => {
         textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
         buttonStyle={{ backgroundColor: "transparent", width: BUTTON_WIDTH }}
         onPress={() => {
-        props.callBack();
+        props.closeMenuCallback();
+        // console.log('props:  ', props)
         }}
       />
     </View>

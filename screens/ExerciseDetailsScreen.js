@@ -249,8 +249,6 @@ const ExerciseDetailsScreen = (props) => {
             style={styles.subTitle}
           >{`${primaryMuscle}, ${secondaryMuscle}`}</Text>
         </View>
-
-      
           <YoutubePlayer
             ref={playerRef}
             height={188}
@@ -310,6 +308,7 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 20,
     color: "#b3b3b3",
+    paddingLeft:4
   },
   videoContiner: {},
   equipmentImageContainer: {

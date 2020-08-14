@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import {
   View,
   Text,
@@ -38,7 +38,7 @@ const OPTIONS = [
   {
     title: "Pick a starting exercise",
     details:
-      "Select one or more and let Pootie Tang fill in the rest of your workout.",
+      "Select one or more exercises and let Pootie Tang fill in the rest of your workout.",
     logo: <MaterialCommunityIcons name="pickaxe" size={40} color="black" />,
     destination: "search",
   },
@@ -51,40 +51,68 @@ const OPTIONS = [
 ];
 
 const CreateNewWorkoutMenuScreen = (props) => {
+  const [details, setDetails] = useState(false);
+  const [iColor, setIColor] = useState("white");
 
-  const goToDifferentScreen =(destination) =>{
-    props.callBack()
+  const goToDifferentScreen = (destination) => {
+    props.callBack();
     props.navigation.navigate(destination);
-  }
+  };
 
+  const changeDetails = () => {
+    setDetails(!details);
+    changeIColor();
+  };
+
+  const changeIColor = () => {
+
+
+    if (iColor == "white") {
+      setIColor("#272c33");
+    } else {
+      setIColor("white");
+    }
+  };
 
   return (
     <BlurView
       intensity={100}
       style={[StyleSheet.absoluteFill, styles.nonBlurredContent]}
     >
-      <TopMenu callBack={props.callBack} />
+      <TopMenu
+        closeMenuCallback={props.callBack}
+        changeDetails={changeDetails}
+        iColor={iColor}
+      />
       <FlatList
         horizontal={false}
         style={styles.list}
         keyExtractor={(element) => element.title}
         data={OPTIONS}
         renderItem={(element) => {
-          // console.log("element.item:  ", element.item);
           return (
-            <TouchableOpacity onPress={() => goToDifferentScreen(element.item.destination)}>
-              <View style={styles.displayCard}>
+            <TouchableOpacity
+              onPress={() => goToDifferentScreen(element.item.destination)}
+            >
+              <View style={styles.topCardContainer}>
                 <View style={styles.logo}>{element.item.logo}</View>
-                <View style={styles.textContainer}>
-                  <Text style={styles.text}>{element.item.title}</Text>
-                </View>
-                <View style={styles.textContainer}>
-                  <Ionicons
-                    style={styles.icon}
-                    name="ios-arrow-forward"
-                    size={20}
-                    color="black"
-                  />
+
+                <Text style={styles.text}>{element.item.title}</Text>
+
+                <Ionicons
+                  style={styles.icon}
+                  name="ios-arrow-forward"
+                  size={20}
+                  color="black"
+                />
+              </View>
+              <View style={styles.bottomCardContainer}>
+                <View style={styles.detailTextContainer}>
+                  {details ? (
+                    <Text style={styles.detailText}>
+                      {element.item.details}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </TouchableOpacity>
@@ -95,29 +123,15 @@ const CreateNewWorkoutMenuScreen = (props) => {
   );
 };
 const styles = StyleSheet.create({
-  displayCard: {
-    flexDirection: "row",
-    // paddingTop: 30,
-    // backgroundColor:'red',
-
-    justifyContent: "center", //Centered vertically
-    alignItems: "center", // Centered horizontally
-    flex: 1,
-  },
-  topMenu: {
-    flexDirection: "row",
-  },
   nonBlurredContent: {
     paddingTop: 30,
   },
-  textContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#000c23",
-    height: "100%",
-    // backgroundColor:'green',
-    justifyContent: "center",
-    paddingBottom: 30,
-    paddingTop: 30,
+  topCardContainer: {
+    flexDirection: "row",
+    paddingTop: 10,
+    paddingBottom: 10,
+    justifyContent: "center", //Centered vertically
+    alignItems: "center", // Centered horizontally
   },
   logo: {
     width: SCREEN_WIDTH * (2 / 10),
@@ -126,16 +140,25 @@ const styles = StyleSheet.create({
   text: {
     width: SCREEN_WIDTH * (7 / 10),
     fontSize: 16,
-    // backgroundColor:'red'
   },
   icon: {
     width: SCREEN_WIDTH * (1 / 10),
-    // backgroundColor:'green',
-
     alignItems: "center",
     paddingLeft: 8,
     borderBottomWidth: 1,
     borderBottomColor: "blue",
+  },
+  bottomCardContainer: {
+    marginLeft: SCREEN_WIDTH * (2 / 10),
+    borderBottomWidth: 1,
+    borderBottomColor: "#000c23",
+  },
+  detailTextContainer: {
+    width: SCREEN_WIDTH * (7 / 10),
+    paddingBottom: 10,
+  },
+  detailText: {
+    color: "#272c33",
   },
 });
 

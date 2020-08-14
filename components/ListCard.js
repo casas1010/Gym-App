@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import {
   View,
   Image,
@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-// import { connect } from "react-redux";
-// import * as actions from "../actions/index";
+import { connect } from "react-redux";
+import * as actions from "../actions/index";
 
 const MAX_LIM = 15;
 const WIDTH = Dimensions.get("window").width * 0.95;
@@ -24,6 +23,8 @@ const ListCard = ({
   secondaryMuscle,
   callBack,
 }) => {
+  const [addExercise, setAddExercise] = useState();
+
   return (
     <TouchableOpacity
       style={styles.itemContainer}
@@ -42,7 +43,11 @@ const ListCard = ({
         });
       }}
     >
-      <Image style={styles.image} source={{ uri: anatomyPicture }} alt={exerciseName} />
+      <Image
+        style={styles.image}
+        source={{ uri: anatomyPicture }}
+        alt={exerciseName}
+      />
       <View style={styles.textContainer}>
         <Text style={styles.nameText}>{exerciseName}</Text>
       </View>
@@ -79,5 +84,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListCard;
-// export default connect(null, actions)(ListCard);
+// export default ListCard;
+export default connect(null, actions)(ListCard);
