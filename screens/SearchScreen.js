@@ -22,6 +22,7 @@ import ListCard from "../components/ListCard";
 import BackGround from "../components/BackGround";
 import ResultsList from "../components/ResultsList";
 
+const WIDTH = Dimensions.get("window").width * 0.95;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
@@ -29,6 +30,11 @@ const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
 const SearchScreen = (props) => {
   const [term, setTerm] = useState("");
+
+  useEffect(() => {
+    console.log("SearchScreen");
+    console.log(props.pickedExercise);
+  });
 
   const filterExercisesByName = (name) => {
     name = name.toLowerCase();
@@ -43,27 +49,70 @@ const SearchScreen = (props) => {
         term={term}
         onTermChange={setTerm}
         onTermSubmit={() => {
-          // console.log(`term searched is ${term}`);
+          console.log(`term searched is ${term}`);
           // console.log(filterExercisesByName(term));
         }}
       />
-      {/* <ScrollView> */}
-        <ResultsList
-          allResults={props.exercises}
-          results={filterExercisesByName(term)}
-          navigation={props.navigation}
-          // style={{ flex: 1 }}
+      <>
+        <FlatList
+          horizontal={false}
+          showsHorizontalScrollIndicator={false}
+          data={filterExercisesByName(term)}
+          keyExtractor={(result) => result.exerciseName}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                style={styles.cardContainer}
+                onPress={() => {
+                  console.log(
+                    `Card with exercise '${item.exerciseName}' was clicked`
+                  );
+                  // props.navigation.navigate("details", item);   // DONT DELETE, THIS WORKS
+                }}
+              >
+                <Image
+                  style={styles.cardImage}
+                  source={{ uri: item.anatomyPicture }}
+                  alt={item.exerciseName}
+                />
+                <View style={styles.cardTextContainer}>
+                  <Text style={styles.cardText}>{item.exerciseName}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
         />
-      {/* </ScrollView> */}
+      </>
     </BackGround>
   );
 };
 
 const styles = StyleSheet.create({
-  list: {
-    paddingLeft: 15,
-    paddingTop: 20,
-    paddingRight: 15,
+  cardContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginTop: 10,
+    width: WIDTH,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+  },
+  cardImage: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    borderWidth: 1,
+    marginLeft: 7,
+  },
+  cardTextContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  cardText: {
+    fontSize: 20,
+    color: "white",
+    paddingBottom: 3,
   },
 });
 
@@ -100,8 +149,8 @@ SearchScreen.navigationOptions = (props) => ({
 });
 
 // export default SearchScreen;
-function mapStateToProps({ auth, exercise }) {
-  return { exercises: exercise.exercises };
+function mapStateToProps({ exercise, pickedExercise }) {
+  return { exercises: exercise.exercises, pickedExercise: pickedExercise };
 }
 
 export default connect(mapStateToProps, actions)(SearchScreen);

@@ -25,7 +25,7 @@ const AuthScreen = (props) => {
   const onAuthComplete = (props) => {
     props.fetchExercises();
     if (props.token) {
-      props.navigation.navigate("map");
+      props.navigation.navigate("WORKOUT");
     }
   };
 

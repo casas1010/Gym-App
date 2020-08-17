@@ -1,55 +1,239 @@
-import React, { Component, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, Modal } from "react-native";
+import { connect } from "react-redux";
+import * as actions from "../actions/";
+
+import React, { Component, useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Modal,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { Button } from "react-native-elements";
+
 import CreateNewWorkoutMenuScreen from "./CreateNewWorkoutMenuScreen";
 import BackGround from "../components/BackGround";
+import ResultsList from "../components/ResultsList";
+const WIDTH = Dimensions.get("window").width * 0.95;
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 
-const PickedExercisesScreen = ({navigation}) => {
+const PickedExercisesScreen = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
-   
+  const [pickedMuscleExerciseData, setPickedMuscleExerciseData] = useState();
+
+  useEffect(() => {
+    setPickedMuscleExerciseData(primaryMuscleDataCount());
+    console.log("PickedExercisesScreen");
+    console.log("props.pickedExercise:  ", props.pickedExercise);
+  }, [props.pickedExercise]);
 
   const changeModal = () => {
     setModalOpen(false);
-    
+    // console.log('props:   ',props);
   };
 
+  const primaryMuscleDataCount = () => {
+    // obtain count of unique primaryMuscle values
+    // const results = props.pickedExercise;  NEEDS A VALUE
+    let counts = {};
+    for (let i = 0; i < props.pickedExercise.length; i++) {
+      counts[props.pickedExercise[i].primaryMuscle] =
+        1 + (counts[props.pickedExercise[i].primaryMuscle] || 0);
+    }
+    // console.log("counts:  ", counts);
+    // change the counts to percentage
+    let countsPercentage = {};
+    Object.keys(counts).forEach((key) => {
+      // console.log("key:  ", key);
+      countsPercentage[key] = (counts[key] / props.pickedExercise.length) * 100;
+    });
+
+    // console.log("countsPercentage:  ", countsPercentage);
+
+    // //get the picture of each main muscle
+    let muscleData = [];
+    Object.keys(countsPercentage).forEach((key) => {
+      props.pickedExercise.forEach((exercise) => {
+        //
+        //
+        if (key == exercise.primaryMuscle) {
+          muscleData.push({
+            primaryMuscle: exercise.primaryMuscle,
+            percentage: countsPercentage[key],
+            anatomyPicture: exercise.anatomyPicture,
+          });
+        }
+      });
+    });
+
+    var flags = [],
+      output = [],
+      l = muscleData.length,
+      i;
+    for (i = 0; i < l; i++) {
+      if (flags[muscleData[i].primaryMuscle]) continue;
+      flags[muscleData[i].primaryMuscle] = true;
+      output.push(muscleData[i]);
+    }
+
+    // console.log("output:  ", output);
+    return output;
+    // setPickedMuscleExerciseData(output);
+
+    //END OF FUNCTION
+  };
+
+  if (!props.pickedExercise.length) {
+    return (
+      <BackGround>
+        <Text
+          style={{
+            color: "white",
+            fontSize: 20,
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          Add an exercise to start building your workout!
+        </Text>
+      </BackGround>
+    );
+  }
+
   return (
-     <BackGround>
+    // MUSCLE % TOP DISPLAY LIST
+    <BackGround>
+      <View style={styles.muscleDataContainer}>
+        <FlatList
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          data={pickedMuscleExerciseData}
+          keyExtractor={(result) => result.primaryMuscle}
+          renderItem={({ item }) => {
+            // console.log("pickedMuscleExerciseData render");
+            // console.log(item);
+            return (
+              <View style={styles.muscleDataCard}>
+                <Text style={styles.muscleDataText}>{item.primaryMuscle}</Text>
+                <View>
+                  <Image
+                    style={styles.cardImage}
+                    source={{ uri: item.anatomyPicture }}
+                    alt={item.exerciseName}
+                  />
+                </View>
+                <Text
+                  style={styles.muscleDataText}
+                >{`${item.percentage}%`}</Text>
+              </View>
+            );
+          }}
+        />
+      </View>
+
+      <FlatList
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        data={props.pickedExercise}
+        keyExtractor={(result) => result.exerciseName}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              style={styles.cardContainer}
+              onPress={() => {
+                console.log(
+                  `Card with exercise '${item.exerciseName}' was clicked`
+                );
+                props.navigation.navigate('details',item)
+              }}
+            >
+              <Image
+                style={styles.cardImage}
+                source={{ uri: item.anatomyPicture }}
+                alt={item.exerciseName}
+              />
+              <View style={styles.cardTextContainer}>
+                <Text style={styles.cardText}>{item.exerciseName}</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
+
+      {/* PREVIOS CODE BELOW */}
       <View style={styles.container}>
         <Text style={styles.welcome}>
           THIS IS THE WINDOW THAT SHOWS THE EXERCISES YOU HAVED PICKED!
         </Text>
         <Button title="turn on Modal" onPress={() => setModalOpen(true)} />
         <Modal animationType="fade" transparent={true} visible={modalOpen}>
-          <CreateNewWorkoutMenuScreen callBack={changeModal} navigation={navigation} />
+          <CreateNewWorkoutMenuScreen
+            callBack={changeModal}
+            navigation={props.navigation}
+          />
         </Modal>
       </View>
     </BackGround>
   );
 };
 var styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  // MUSCLE CARD CSS
+  muscleDataContainer: {
+    height: SCREEN_HEIGHT * 0.2,
+    // backgroundColor: "red",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent",
+    marginTop: 20,
   },
-  welcome: {
-    fontSize: 20,
+  muscleDataCard: {
+    justifyContent: "center",
+    alignItems: "center",
+    // backgroundColor: "blue",
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  muscleDataText: {
+    fontSize: 15,
     textAlign: "center",
     margin: 10,
+    color: "white",
   },
-
+  // CARD CSS
+  cardContainer: {
+    flex: 1,
+    flexDirection: "row",
+    marginTop: 10,
+    width: WIDTH,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "grey",
+  },
+  cardImage: {
+    height: 50,
+    width: 50,
+    borderRadius: 25,
+    borderWidth: 1,
+    marginLeft: 7,
+  },
+  cardTextContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  cardText: {
+    fontSize: 20,
+    color: "white",
+    paddingBottom: 3,
+  },
 });
-//
-//
-//
-//
 
-PickedExercisesScreen.navigationOptions = (props) => ({
+PickedExercisesScreen.navigationOptions = (screenProps) => ({
   title: "",
   headerStyle: {
     backgroundColor: "#000c23",
@@ -62,16 +246,18 @@ PickedExercisesScreen.navigationOptions = (props) => ({
     <Button //RIGHT BUTTON
       title="  . . .     "
       buttonStyle={{ width: BUTTON_WIDTH, backgroundColor: "#000c23" }}
-      textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
+      textStyle={{ color: "white", fontWeight: "bold" }}
       onPress={() => {
         console.log("3 buttons presses");
+        console.log("screenProps.state:  ", screenProps.state);
+        // console.log('props:  ', props)
       }}
     />
   ),
   headerLeft: () => (
     <Button // LEFT BUTTON
       title="  + New"
-      textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
+      textStyle={{ color: "white", fontWeight: "bold" }}
       buttonStyle={{ backgroundColor: "#000c23", width: BUTTON_WIDTH }}
       onPress={() => {
         setModalOpen(true);
@@ -80,135 +266,11 @@ PickedExercisesScreen.navigationOptions = (props) => ({
   ),
 });
 
-export default PickedExercisesScreen;
+function mapStateToProps({ pickedExercise }) {
+  // return { pickedExercise: pickedExercise.pickedExercises };
+  return { pickedExercise };
+}
 
-// import React, { useState } from "react";
-// import {
-//   Alert,
-//   Modal,
-//   StyleSheet,
-//   Text,
-//   TouchableHighlight,
-//   Dimensions,
-//   View
-// } from "react-native";
-// import { Button } from "react-native-elements";
-
-// const SCREEN_WIDTH = Dimensions.get("window").width;
-// const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
-
-// const PickedExercisesScreen = () => {
-//   const [modalVisible, setModalVisible] = useState(false);
-//   return (
-//     <View style={styles.centeredView}>
-//       <Modal
-//         animationType="slide"
-//         transparent={true}
-//         visible={modalVisible}
-//         onRequestClose={() => {
-//           Alert.alert("Modal has been closed.");
-//         }}
-//       >
-
-//         <View style={styles.centeredView}>
-//           <View style={styles.modalView}>
-//             <Text style={styles.modalText}>Hello World!</Text>
-
-//             <TouchableHighlight
-//               style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-//               onPress={() => {
-//                 setModalVisible(!modalVisible);
-//               }}
-//             >
-//               <Text style={styles.textStyle}>Hide Modal</Text>
-//             </TouchableHighlight>
-//           </View>
-//         </View>
-
-//       </Modal>
-
-//       <TouchableHighlight
-//         style={styles.openButton}
-//         onPress={() => {
-//           setModalVisible(true);
-//         }}
-//       >
-//         <Text style={styles.textStyle}>Show Modal</Text>
-//       </TouchableHighlight>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   centeredView: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     marginTop: 22
-//   },
-//   modalView: {
-//     margin: 20,
-//     backgroundColor: "red",
-//     borderRadius: 20,
-//     padding: 35,
-//     alignItems: "center",
-//     shadowColor: "#000",
-//     shadowOffset: {
-//       width: 0,
-//       height: 2
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5
-//   },
-//   openButton: {
-//     backgroundColor: "#F194FF",
-//     borderRadius: 20,
-//     padding: 10,
-//     elevation: 2
-//   },
-//   textStyle: {
-//     color: "white",
-//     fontWeight: "bold",
-//     textAlign: "center"
-//   },
-//   modalText: {
-//     marginBottom: 15,
-//     textAlign: "center"
-//   }
-// });
-
-// PickedExercisesScreen.navigationOptions = ({navigation}) => ({
-//   title: "",
-//   headerStyle: {
-//     backgroundColor: "#000c23",
-//     shadowRadius: 0,
-//     shadowOffset: {
-//       height: 0,
-//     },
-//   },
-//   headerRight: () => (
-//     <Button //RIGHT BUTTON
-//       title="  . . .     "
-//       buttonStyle={{ width: BUTTON_WIDTH, backgroundColor: "#000c23" }}
-//       textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
-//       onPress={() => {
-//         console.log("3 buttons presses");
-//       }}
-//     />
-//   ),
-//   headerLeft: () => (
-//     <Button // LEFT BUTTON
-//       title="  + New"
-//       textStyle={{ color: "white", fontSize: 100, fontWeight: "bold" }}
-//       buttonStyle={{ backgroundColor: "#000c23", width: BUTTON_WIDTH }}
-//       onPress={() => {
-//         // props.setModalVisible(true);
-//         // console.log('navigation.setParams:   ',navigation.setParams(setModalVisible(true)))
-//         console.log('not working')
-//       }}
-//     />
-//   ),
-// });
+export default connect(mapStateToProps, actions)(PickedExercisesScreen);
 
 // export default PickedExercisesScreen;

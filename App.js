@@ -20,8 +20,6 @@ const MainNavigator = createBottomTabNavigator(
     auth: { screen: AuthScreen },
     main: {
       screen: createBottomTabNavigator({
-        map: { screen: LogsScreen },
-        deck: { screen: LogsScreen },
         WORKOUT: {
           screen: createStackNavigator({
             WORKOUT: { screen: PickedExercisesScreen },
@@ -29,7 +27,9 @@ const MainNavigator = createBottomTabNavigator(
             search: { screen: SearchScreen },
             details: { screen: ExerciseDetailsScreen },
           }),
-        },
+        }, // WORKOUT ENDS HERE
+        map: { screen: LogsScreen },
+        deck: { screen: LogsScreen },
       }),
     },
   },

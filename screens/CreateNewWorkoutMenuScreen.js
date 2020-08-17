@@ -56,7 +56,7 @@ const CreateNewWorkoutMenuScreen = (props) => {
 
   const goToDifferentScreen = (destination) => {
     props.callBack();
-    props.navigation.navigate(destination);
+    props.navigation.navigate(destination,props.navigation);
   };
 
   const changeDetails = () => {
@@ -65,8 +65,6 @@ const CreateNewWorkoutMenuScreen = (props) => {
   };
 
   const changeIColor = () => {
-
-
     if (iColor == "white") {
       setIColor("#272c33");
     } else {
@@ -92,7 +90,12 @@ const CreateNewWorkoutMenuScreen = (props) => {
         renderItem={(element) => {
           return (
             <TouchableOpacity
-              onPress={() => goToDifferentScreen(element.item.destination)}
+              onPress={() => {
+                console.log('CreateNewWorkoutMenuScreen');
+                console.log('element.item.destination:   ',element.item.destination)
+                goToDifferentScreen(element.item.destination);
+
+              }}
             >
               <View style={styles.topCardContainer}>
                 <View style={styles.logo}>{element.item.logo}</View>
