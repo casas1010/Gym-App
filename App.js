@@ -13,6 +13,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import ExerciseDetailsScreen from "./screens/ExerciseDetailsScreen";
 import PickedExercisesScreen from "./screens/PickedExercisesScreen";
 import CreateNewWorkoutMenuScreen from "./screens/CreateNewWorkoutMenuScreen.js";
+import workoutDetailsScreen from './screens/workoutDetailsScreen';
 
 const MainNavigator = createBottomTabNavigator(
   {
@@ -26,6 +27,7 @@ const MainNavigator = createBottomTabNavigator(
             CreateNewWorkoutMenuScreen: { screen: CreateNewWorkoutMenuScreen },
             search: { screen: SearchScreen },
             details: { screen: ExerciseDetailsScreen },
+            workoutDetailsScreen: { screen: workoutDetailsScreen },
           }),
         }, // WORKOUT ENDS HERE
         map: { screen: LogsScreen },

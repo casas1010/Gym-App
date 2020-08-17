@@ -118,6 +118,7 @@ const PickedExercisesScreen = (props) => {
   return (
     // MUSCLE % TOP DISPLAY LIST
     <BackGround>
+      
       <View style={styles.muscleDataContainer}>
         <FlatList
           horizontal={true}
@@ -145,6 +146,12 @@ const PickedExercisesScreen = (props) => {
           }}
         />
       </View>
+      <Button
+          title="Add an exercise"
+          type="clear"
+          icon={<AntDesign name="plus" size={24} color="white" />}
+          onPress={() => props.navigation.navigate("search")}
+        />
 
       <FlatList //DISPLAY EXERCISES PICKED
         horizontal={false}
@@ -159,7 +166,7 @@ const PickedExercisesScreen = (props) => {
                 console.log(
                   `Card with exercise '${item.exerciseName}' was clicked`
                 );
-                props.navigation.navigate("details", item);
+                props.navigation.navigate("workoutDetailsScreen", item);
               }}
             >
               <Image
