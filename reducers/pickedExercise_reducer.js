@@ -69,6 +69,7 @@ const pickedExercise_reducer = (state = [...all], action) => {
   switch (action.type) {
     case ADD_EXERCISE:
       console.log("ADD_EXERCISE reducer invoked with:  ", action.payload);
+      console.log(`prior to adding, the lenght of state is ${state.length}`)
       return _.uniqBy([action.payload, ...state], "exerciseName");
 
     case REMOVE_EXERCISE: // NOT SURE IF THIS WILL WORK

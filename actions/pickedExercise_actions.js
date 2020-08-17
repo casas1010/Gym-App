@@ -4,11 +4,12 @@ import {
   CALULATE_PRIMARY_MUSCLE_PERCENTAGE,
 } from "./types";
 
-export const pickExercise = (exerciseName) => {
+export const pickExercise = (exerciseObj) => {
   console.log('pickExercise() action invoked')
+  console.log(`${exerciseObj.exerciseName} is being added to store!` )
   return {
     type: ADD_EXERCISE,
-    payload: exerciseName,
+    payload: exerciseObj,
   };
 };
 

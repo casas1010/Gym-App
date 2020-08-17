@@ -68,6 +68,7 @@ const SearchScreen = (props) => {
                     `Card with exercise '${item.exerciseName}' was clicked`
                   );
                   // props.navigation.navigate("details", item);   // DONT DELETE, THIS WORKS
+                  props.pickExercise(item)
                 }}
               >
                 <Image
