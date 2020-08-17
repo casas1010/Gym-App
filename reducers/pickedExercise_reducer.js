@@ -65,7 +65,7 @@ const tempState5 = {
 };
 const all = [tempState, tempState2];
 
-const pickedExercise_reducer = (state = [...all], action) => {
+const pickedExercise_reducer = (state = [], action) => {
   switch (action.type) {
     case ADD_EXERCISE:
       console.log("ADD_EXERCISE reducer invoked with:  ", action.payload);

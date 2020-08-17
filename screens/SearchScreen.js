@@ -12,6 +12,7 @@ import {
   TouchableOpacityBase,
 } from "react-native";
 import { Button } from "react-native-elements";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { connect } from "react-redux";
 import * as actions from "../actions/index";
@@ -30,11 +31,21 @@ const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
 const SearchScreen = (props) => {
   const [term, setTerm] = useState("");
+  const [prePickedExercise, setPrePickedExercise] = useState([]);
 
   useEffect(() => {
     console.log("SearchScreen");
-    console.log(props.pickedExercise);
   });
+
+  const addExercisesToPickedExercise_reducer = () => {
+    console.log(`prePickedExercise:  ${prePickedExercise.length}`);
+    prePickedExercise.forEach((exercise) => {
+      props.pickExercise(exercise);
+    });
+    setPrePickedExercise([]);
+    props.navigation.navigate("WORKOUT");
+
+  };
 
   const filterExercisesByName = (name) => {
     name = name.toLowerCase();
@@ -68,7 +79,8 @@ const SearchScreen = (props) => {
                     `Card with exercise '${item.exerciseName}' was clicked`
                   );
                   // props.navigation.navigate("details", item);   // DONT DELETE, THIS WORKS
-                  props.pickExercise(item)
+                  setPrePickedExercise([...prePickedExercise, item]);
+                  // props.pickExercise(item);
                 }}
               >
                 <Image
@@ -83,6 +95,27 @@ const SearchScreen = (props) => {
             );
           }}
         />
+        {!prePickedExercise.length ? null : (
+          <Button
+            title="START WORKOUT"
+            containerStyle={{
+              backgroundColor: "red",
+              width: SCREEN_WIDTH * 0.5,
+              position: "absolute",
+              height: 50,
+              alignItems: "center",
+              justifyContent: "center",
+              right: 30,
+              bottom: 30,
+            }}
+            onPress={() => addExercisesToPickedExercise_reducer()}
+            titleStyle={{ fontSize: 15 }}
+            type="clear"
+            icon={
+              <MaterialCommunityIcons name="weight" size={24} color="black" />
+            }
+          />
+        )}
       </>
     </BackGround>
   );

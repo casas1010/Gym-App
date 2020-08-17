@@ -13,10 +13,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Button } from "react-native-elements";
-
+import { AntDesign } from "@expo/vector-icons";
 import CreateNewWorkoutMenuScreen from "./CreateNewWorkoutMenuScreen";
 import BackGround from "../components/BackGround";
 import ResultsList from "../components/ResultsList";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 const WIDTH = Dimensions.get("window").width * 0.95;
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -30,7 +32,7 @@ const PickedExercisesScreen = (props) => {
   useEffect(() => {
     setPickedMuscleExerciseData(primaryMuscleDataCount());
     console.log("PickedExercisesScreen");
-    console.log("props.pickedExercise:  ", props.pickedExercise);
+    // console.log("props.pickedExercise:  ", props.pickedExercise);
   }, [props.pickedExercise]);
 
   const changeModal = () => {
@@ -98,10 +100,17 @@ const PickedExercisesScreen = (props) => {
             fontSize: 20,
             textAlign: "center",
             fontWeight: "bold",
+            paddingTop: 20,
           }}
         >
           Add an exercise to start building your workout!
         </Text>
+        <Button
+          title="Add an exercise"
+          type="clear"
+          icon={<AntDesign name="plus" size={24} color="white" />}
+          onPress={() => props.navigation.navigate("search")}
+        />
       </BackGround>
     );
   }
@@ -128,16 +137,16 @@ const PickedExercisesScreen = (props) => {
                     alt={item.exerciseName}
                   />
                 </View>
-                <Text
-                  style={styles.muscleDataText}
-                >{`${item.percentage}%`}</Text>
+                <Text style={styles.muscleDataText}>
+                  {(Math.round(item.percentage * 100) / 100).toFixed(0) + "%"}
+                </Text>
               </View>
             );
           }}
         />
       </View>
 
-      <FlatList
+      <FlatList //DISPLAY EXERCISES PICKED
         horizontal={false}
         showsHorizontalScrollIndicator={false}
         data={props.pickedExercise}
@@ -150,7 +159,7 @@ const PickedExercisesScreen = (props) => {
                 console.log(
                   `Card with exercise '${item.exerciseName}' was clicked`
                 );
-                props.navigation.navigate('details',item)
+                props.navigation.navigate("details", item);
               }}
             >
               <Image
@@ -166,11 +175,30 @@ const PickedExercisesScreen = (props) => {
         }}
       />
 
+      {!props.pickedExercise.length ? null : (
+        <Button
+          title="START WORKOUT"
+          containerStyle={{
+            backgroundColor: "red",
+            width: SCREEN_WIDTH * 0.5,
+            position: "absolute",
+            height: 50,
+            alignItems: "center",
+            justifyContent: "center",
+            right: 30,
+            bottom: 30,
+          }}
+          onPress={() => console.log('start!!!')}
+          titleStyle={{ fontSize: 15 }}
+          type="clear"
+          icon={
+            <MaterialCommunityIcons name="weight" size={24} color="black" />
+          }
+        />
+      )}
+
       {/* PREVIOS CODE BELOW */}
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          THIS IS THE WINDOW THAT SHOWS THE EXERCISES YOU HAVED PICKED!
-        </Text>
         <Button title="turn on Modal" onPress={() => setModalOpen(true)} />
         <Modal animationType="fade" transparent={true} visible={modalOpen}>
           <CreateNewWorkoutMenuScreen
@@ -249,7 +277,7 @@ PickedExercisesScreen.navigationOptions = (screenProps) => ({
       textStyle={{ color: "white", fontWeight: "bold" }}
       onPress={() => {
         console.log("3 buttons presses");
-        console.log("screenProps.state:  ", screenProps.state);
+        // console.log("screenProps.state:  ", screenProps.state);
         // console.log('props:  ', props)
       }}
     />
