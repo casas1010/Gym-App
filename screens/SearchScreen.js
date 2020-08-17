@@ -29,13 +29,37 @@ const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 
 // PULL ALLL IMAGES FROM HERE: https://www.britannica.com/science/human-muscle-system/The-abdomen
 
+
+// const Item = ({ item, onPress, style }) => (
+//   <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+//     <Text style={styles.title}>{item.title}</Text>
+//   </TouchableOpacity>
+// );
+
+
 const SearchScreen = (props) => {
   const [term, setTerm] = useState("");
   const [prePickedExercise, setPrePickedExercise] = useState([]);
 
   useEffect(() => {
     console.log("SearchScreen");
-  });
+  },[]);
+
+  // const renderItem = ({ item }) => {
+  //   const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
+
+  //   return (
+  //     <Item
+  //       item={item}
+  //       onPress={() => setSelectedId(item.id)}
+  //       style={{ backgroundColor }}
+  //     />
+  //   );
+  // };
+
+
+
+
 
   const addExercisesToPickedExercise_reducer = () => {
     console.log(`prePickedExercise:  ${prePickedExercise.length}`);
@@ -44,7 +68,6 @@ const SearchScreen = (props) => {
     });
     setPrePickedExercise([]);
     props.navigation.navigate("WORKOUT");
-
   };
 
   const filterExercisesByName = (name) => {
@@ -67,18 +90,31 @@ const SearchScreen = (props) => {
       <>
         <FlatList
           horizontal={false}
+          extraData={prePickedExercise}
           showsHorizontalScrollIndicator={false}
           data={filterExercisesByName(term)}
           keyExtractor={(result) => result.exerciseName}
           renderItem={({ item }) => {
+            // check if item is in setPrePickedExercise, if yes, change the background color to red, if not
+            // change the background color to transparent
+
             return (
               <TouchableOpacity
-                style={styles.cardContainer}
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  marginTop: 10,
+                  width: WIDTH,
+                  paddingBottom: 5,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "grey",
+                }}
                 onPress={() => {
                   console.log(
                     `Card with exercise '${item.exerciseName}' was clicked`
                   );
                   // props.navigation.navigate("details", item);   // DONT DELETE, THIS WORKS
+
                   setPrePickedExercise([...prePickedExercise, item]);
                   // props.pickExercise(item);
                 }}
@@ -129,6 +165,7 @@ const styles = StyleSheet.create({
     width: WIDTH,
     paddingBottom: 5,
     borderBottomWidth: 1,
+    backgroundColor: "red",
     borderBottomColor: "grey",
   },
   cardImage: {

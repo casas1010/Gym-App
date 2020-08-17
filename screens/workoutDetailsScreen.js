@@ -11,6 +11,12 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
+
+// pull data from sheet 2
+// if there are no logs for that exercise, give the default DETAILS of 4 sets of 5 reps each at 10 lb 
+// if there are logs for that exercise, input the last DETIALS, aswell as the diplay the history and the exercise number for that history
+
+
 const listViewData = Array(20)
   .fill("")
   .map((_, i) => ({ key: `${i}`, text: `item #${i}` }));
