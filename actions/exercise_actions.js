@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_EXERCISES } from "./types";
+import { FETCH_EXERCISES, EDIT_EXERCISE } from "./types";
 
 const makeTableFromData = (data, numberOfRows) => {
   console.log("processing data initialized");
@@ -28,7 +28,6 @@ const makeTableFromData = (data, numberOfRows) => {
 
   const masterArray = [];
 
-
   // ASSOCIATE KEY VALUE PAIRS
   rowArraysNotHeader.forEach((array) => {
     let exerciseData = {
@@ -39,6 +38,7 @@ const makeTableFromData = (data, numberOfRows) => {
       equipmentPicture: "",
       description: "",
       anatomyPicture: "",
+      isSelect: false,
     };
 
     // console.log("this is run number:  ", i);
@@ -90,4 +90,13 @@ export const fetchExercisesAction = () => async (dispatch) => {
 export const fetchExercises = () => async (dispatch) => {
   // perform action
   dispatch(fetchExercisesAction());
+};
+
+export const toggleExercerseIsSelect = (exercise) => {
+  exercise.isSelect = !exercise.isSelect;
+  console.log("toggleExercerseIsSelect action, modified exercise:", exercise);
+  return {
+    type: TOGGLE_EXERCISE_IS_SELECT,
+    payload: exercise,
+  };
 };

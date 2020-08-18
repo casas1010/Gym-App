@@ -1,20 +1,19 @@
-import { FETCH_EXERCISES } from "../actions/types";
+import { FETCH_EXERCISES,TOGGLE_EXERCISE_IS_SELECT } from "../actions/types";
 
 const exerciseReducer = (state = {}, action) => {
   switch (action.type) {
-    case FETCH_EXERCISES:      
+    case FETCH_EXERCISES:
       return { exercises: action.payload };
+    case TOGGLE_EXERCISE_IS_SELECT:
+      return state.map((exercise) => {
+        return exercise.exerciseName === action.payload.exerciseName ? action.payload : exercise;
+      });
     default:
       return state;
   }
 };
 
 export default exerciseReducer;
-
-
-
-
-
 
 /*
 
@@ -29,16 +28,3 @@ export default exerciseReducer;
 
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
