@@ -1,13 +1,38 @@
-import { FETCH_EXERCISES,TOGGLE_EXERCISE_IS_SELECT } from "../actions/types";
+import { FETCH_EXERCISES, TOGGLE_EXERCISE_IS_SELECT } from "../actions/types";
+
+// case 'edit_blogpost':
+//   return state.map(blogPost => {
+//     return blogPost.id === action.payload.id ? action.payload : blogPost;
+//   });
 
 const exerciseReducer = (state = {}, action) => {
   switch (action.type) {
     case FETCH_EXERCISES:
       return { exercises: action.payload };
     case TOGGLE_EXERCISE_IS_SELECT:
-      return state.map((exercise) => {
-        return exercise.exerciseName === action.payload.exerciseName ? action.payload : exercise;
+      console.log("TOGGLE_EXERCISE_IS_SELECT REDUCER ACTIVE");
+      // console.log(typeof state.exercises);
+      const newState = [];
+      state.exercises.forEach((exercise) => {
+        if (exercise == action.payload) {
+          newState.push(action.payload);
+        } else {
+          newState.push(exercise);
+        }
+        // console.log(exercise);
       });
+      return {exercises: [...newState]};
+
+    // state.exercises.map((exercise) => {
+    //   if (exercise == action.payload) {
+    //     newState.push(action.payload);
+    //   } else {
+    //     newState.push(exercise);
+    //   }
+    // });
+    // console.log(newState);
+    // return newState;
+
     default:
       return state;
   }

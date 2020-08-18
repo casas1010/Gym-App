@@ -28,32 +28,43 @@ const SCREEN_HEIGHT = Dimensions.get("window").height;
 const PickedExercisesScreen = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [pickedMuscleExerciseData, setPickedMuscleExerciseData] = useState();
+  const [pickedExercises, setPickedExercises] = useState([]);
 
   useEffect(() => {
+    retrievePickedExercises();
     setPickedMuscleExerciseData(primaryMuscleDataCount());
     console.log("PickedExercisesScreen");
-    // console.log("props.pickedExercise:  ", props.pickedExercise);
-  }, [props.pickedExercise]);
+  }, [props.exercises]);
+
+  const retrievePickedExercises = () => {
+    let pickedExerciseArr = [];
+    //
+    props.exercises.forEach((exercise) => {
+      if (exercise.isSelect == true) {
+        pickedExerciseArr.push(exercise);
+      }
+    });
+    //
+    setPickedExercises([...pickedExerciseArr]);
+  };
 
   const changeModal = () => {
     setModalOpen(false);
-    // console.log('props:   ',props);
   };
 
   const primaryMuscleDataCount = () => {
     // obtain count of unique primaryMuscle values
-    // const results = props.pickedExercise;  NEEDS A VALUE
     let counts = {};
-    for (let i = 0; i < props.pickedExercise.length; i++) {
-      counts[props.pickedExercise[i].primaryMuscle] =
-        1 + (counts[props.pickedExercise[i].primaryMuscle] || 0);
+    for (let i = 0; i < pickedExercises.length; i++) {
+      counts[pickedExercises[i].primaryMuscle] =
+        1 + (counts[pickedExercises[i].primaryMuscle] || 0);
     }
     // console.log("counts:  ", counts);
     // change the counts to percentage
     let countsPercentage = {};
     Object.keys(counts).forEach((key) => {
       // console.log("key:  ", key);
-      countsPercentage[key] = (counts[key] / props.pickedExercise.length) * 100;
+      countsPercentage[key] = (counts[key] / pickedExercises.length) * 100;
     });
 
     // console.log("countsPercentage:  ", countsPercentage);
@@ -61,7 +72,7 @@ const PickedExercisesScreen = (props) => {
     // //get the picture of each main muscle
     let muscleData = [];
     Object.keys(countsPercentage).forEach((key) => {
-      props.pickedExercise.forEach((exercise) => {
+      pickedExercises.forEach((exercise) => {
         //
         //
         if (key == exercise.primaryMuscle) {
@@ -91,7 +102,7 @@ const PickedExercisesScreen = (props) => {
     //END OF FUNCTION
   };
 
-  if (!props.pickedExercise.length) {
+  if (!pickedExercises.length) {
     return (
       <BackGround>
         <Text
@@ -118,7 +129,6 @@ const PickedExercisesScreen = (props) => {
   return (
     // MUSCLE % TOP DISPLAY LIST
     <BackGround>
-      
       <View style={styles.muscleDataContainer}>
         <FlatList
           horizontal={true}
@@ -126,8 +136,6 @@ const PickedExercisesScreen = (props) => {
           data={pickedMuscleExerciseData}
           keyExtractor={(result) => result.primaryMuscle}
           renderItem={({ item }) => {
-            // console.log("pickedMuscleExerciseData render");
-            // console.log(item);
             return (
               <View style={styles.muscleDataCard}>
                 <Text style={styles.muscleDataText}>{item.primaryMuscle}</Text>
@@ -147,16 +155,16 @@ const PickedExercisesScreen = (props) => {
         />
       </View>
       <Button
-          title="Add an exercise"
-          type="clear"
-          icon={<AntDesign name="plus" size={24} color="white" />}
-          onPress={() => props.navigation.navigate("search")}
-        />
+        title="Add an exercise"
+        type="clear"
+        icon={<AntDesign name="plus" size={24} color="white" />}
+        onPress={() => props.navigation.navigate("search")}
+      />
 
       <FlatList //DISPLAY EXERCISES PICKED
         horizontal={false}
         showsHorizontalScrollIndicator={false}
-        data={props.pickedExercise}
+        data={pickedExercises}
         keyExtractor={(result) => result.exerciseName}
         renderItem={({ item }) => {
           return (
@@ -182,7 +190,7 @@ const PickedExercisesScreen = (props) => {
         }}
       />
 
-      {!props.pickedExercise.length ? null : (
+      {!pickedExercises.length ? null : (
         <Button
           title="START WORKOUT"
           containerStyle={{
@@ -195,7 +203,7 @@ const PickedExercisesScreen = (props) => {
             right: 30,
             bottom: 30,
           }}
-          onPress={() => console.log('start!!!')}
+          onPress={() => console.log("start!!!")}
           titleStyle={{ fontSize: 15 }}
           type="clear"
           icon={
@@ -301,11 +309,9 @@ PickedExercisesScreen.navigationOptions = (screenProps) => ({
   ),
 });
 
-function mapStateToProps({ pickedExercise }) {
-  // return { pickedExercise: pickedExercise.pickedExercises };
-  return { pickedExercise };
+function mapStateToProps({ exercise }) {
+  return { exercises: exercise.exercises };
 }
-
 export default connect(mapStateToProps, actions)(PickedExercisesScreen);
 
 // export default PickedExercisesScreen;

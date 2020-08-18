@@ -35,32 +35,11 @@ const SearchScreen = (props) => {
 
   useEffect(() => {
     console.log("SearchScreen");
-    setDisplayProperties();
   }, []);
 
-  const setDisplayProperties = () => {
-    // const modExercises = [];
-    // props.exercises.map((item) => {
-    //   item.isSelect = false;
-    //   modExercises.push(item);
-    // });
-    // setAllExercises([...modExercises]);
-    setAllExercises([...props.exercises])
-  };
-
-  const toggleExerciseisSelect = (item) => {
-    const allExercisesCopy = allExercises.map((exercise) => {
-      if (exercise == item) {
-        exercise.isSelect = !exercise.isSelect;
-        return exercise;
-      }
-      return exercise;
-    });
-    setAllExercises([...allExercisesCopy]);
-  };
   const checkisSelectProperty = (item) => {
     let returnValue = false;
-    allExercises.forEach((exercise) => {
+    props.exercises.forEach((exercise) => {
       if (exercise.isSelect == true) {
         returnValue = true;
       }
@@ -68,16 +47,11 @@ const SearchScreen = (props) => {
     return returnValue;
   };
 
-  const addExercisesToPickedExercise_reducer = () => {
-    allExercises.forEach((exercise) => {
-      exercise.isSelect ? props.pickExercise(exercise) : null;
-    });
-    props.navigation.navigate("WORKOUT");
-  };
-
   const filterExercisesByName = (name) => {
     name = name.toLowerCase();
-    return allExercises.filter((result) => {
+    return props.exercises.filter((result) => {
+      // console.log('result.exerciseName2')
+      // console.log( result)
       return result.exerciseName.toLowerCase().includes(name);
     });
   };
@@ -94,7 +68,7 @@ const SearchScreen = (props) => {
       <>
         <FlatList
           horizontal={false}
-          extraData={allExercises}
+          extraData={props.exercises}
           showsHorizontalScrollIndicator={false}
           data={filterExercisesByName(term)}
           keyExtractor={(result) => result.exerciseName}
@@ -108,7 +82,6 @@ const SearchScreen = (props) => {
                   width: WIDTH,
                   paddingBottom: 5,
                   borderBottomWidth: 1,
-                  // backgroundColor: item.isSelect ? "red" : "transparent",
                   borderBottomColor: "grey",
                 }}
                 onPress={() => {
@@ -117,7 +90,7 @@ const SearchScreen = (props) => {
                   );
 
                   // props.navigation.navigate("details", item);   // DONT DELETE, THIS WORKS
-                  toggleExerciseisSelect(item);
+                  props.toggleExercerseIsSelect(item);
                 }}
               >
                 <Image
@@ -153,7 +126,7 @@ const SearchScreen = (props) => {
               right: 30,
               bottom: 30,
             }}
-            onPress={() => addExercisesToPickedExercise_reducer()}
+            onPress={() => props.navigation.navigate("WORKOUT")}
             titleStyle={{ fontSize: 15 }}
             type="clear"
             icon={

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_EXERCISES, EDIT_EXERCISE } from "./types";
+import { FETCH_EXERCISES, TOGGLE_EXERCISE_IS_SELECT } from "./types";
 
 const makeTableFromData = (data, numberOfRows) => {
   console.log("processing data initialized");
@@ -94,7 +94,7 @@ export const fetchExercises = () => async (dispatch) => {
 
 export const toggleExercerseIsSelect = (exercise) => {
   exercise.isSelect = !exercise.isSelect;
-  console.log("toggleExercerseIsSelect action, modified exercise:", exercise);
+  // console.log("toggleExercerseIsSelect action, modified exercise:", exercise);
   return {
     type: TOGGLE_EXERCISE_IS_SELECT,
     payload: exercise,
