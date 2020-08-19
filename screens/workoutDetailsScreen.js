@@ -1,233 +1,170 @@
-// import React, { useState, useEffect } from "react";
-// import { View, Text, StyleSheet, Dimensions } from "react-native";
-// import { Button } from "react-native-elements";
-// import { connect } from "react-redux";
-
-// import BackGround from "../components/BackGround";
-
-// const WIDTH = Dimensions.get("window").width * 0.95;
-// const SCREEN_WIDTH = Dimensions.get("window").width;
-// const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
-// const SCREEN_HEIGHT = Dimensions.get("window").height;
-
-// // pull data from sheet 2
-// // if there are no logs for that exercise, give the default DETAILS of 4 sets of 5 reps each at 10 lb
-// // if there are logs for that exercise, input the last DETIALS, aswell as the diplay the history and the exercise number for that history
-
-// const workoutDetailsScreen = (props) => {
-//   useEffect(() => {
-//     // console.log(props.exerciseLog)
-//     getExerciseLogs();
-//     console.log("workoutDetailsScreen");
-//   });
-
-//   const getExerciseLogs = () => {
-//     // get the data for that exercise
-//     const data = props.exerciseLog.filter(
-//       (exercise) =>
-//         props.navigation.state.params.exerciseName == exercise.exerciseName
-//     );
-//     // show the data in order from most recent to oldest
-//     const sortedData = data.sort(function (a, b) {
-//       return new Date(b.date) - new Date(a.date);
-//     });
-//     console.log(sortedData);
-//   };
-
-//   return (
-//     <BackGround>
-//       <Text>workoutDetailsScreen</Text>
-//     </BackGround>
-//   );
-// };
-
-// const styles = StyleSheet.create({});
-
-// workoutDetailsScreen.navigationOptions = (props) => ({
-//   title: props.navigation.state.params.exerciseName,
-//   headerTitleStyle: {
-//     fontWeight: "bold",
-//   },
-//   headerTintColor: "#fff",
-//   headerStyle: {
-//     backgroundColor: "#000c23",
-//     shadowRadius: 0,
-//     shadowOffset: {
-//       height: 0,
-//     },
-//   },
-//   headerRight: () => (
-//     <Button //RIGHT BUTTON
-//       title="  . . .     "
-//       buttonStyle={{ width: BUTTON_WIDTH, backgroundColor: "#000c23" }}
-//       textStyle={{ color: "white", fontWeight: "bold" }}
-//       onPress={() => {
-//         console.log("3 buttons presses");
-//         console.log(props.navigation.state.params.exerciseName);
-//         // console.log("screenProps.state:  ", screenProps.state);
-//         // console.log('props:  ', props)
-//       }}
-//     />
-//   ),
-//   //   headerLeft: () => (
-//   //     <Button // LEFT BUTTON
-//   //       title="  + New"
-//   //       textStyle={{ color: "white", fontWeight: "bold" }}
-//   //       buttonStyle={{ backgroundColor: "#000c23", width: BUTTON_WIDTH }}
-//   //       onPress={() => {
-//   //         setModalOpen(true);
-//   //       }}
-//   //     />
-//   //   ),
-// });
-
-// function mapStateToProps({ exerciseLog }) {
-//   return { exerciseLog };
-// }
-
-// export default connect(mapStateToProps)(workoutDetailsScreen);
-
-
-
-// @flow
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { Button } from "react-native-elements";
+import { connect } from "react-redux";
 import {
-  StyleSheet, View, SafeAreaView, Dimensions, Animated, TextInput,
-} from 'react-native';
-import { Svg } from 'expo';
-import * as path from 'svg-path-properties';
-import * as shape from 'd3-shape';
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+} from "react-native-chart-kit"; // https://developer.aliyun.com/mirror/npm/package/expo-chart-kit
 
-import {
-  scaleTime,
-  scaleLinear,
-  scaleQuantile,
-} from 'd3-scale';
+import BackGround from "../components/BackGround";
+import CircleWithText from "../components/CircleWithText";
 
-const {
-  Path, Defs, LinearGradient, Stop,
-} = Svg;
-const d3 = {
-  shape,
+import { AntDesign } from "@expo/vector-icons";
+
+const WIDTH = Dimensions.get("window").width * 0.95;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+
+// pull data from sheet 2
+// if there are no logs for that exercise, give the default DETAILS of 4 sets of 5 reps each at 10 lb
+// if there are logs for that exercise, input the last DETIALS, aswell as the diplay the history and the exercise number for that history
+
+const workoutDetailsScreen = (props) => {
+  const [chartData, setChartData] = useState([]);
+  const [xData, setXData] = useState([]);
+  const [yDataWeight, setYDataWeight] = useState([]);
+  const [yDataSets, setYDataSets] = useState([]);
+  const [yDataReps, setYDataReps] = useState([]);
+  let XDATA = [];
+  let YDATAWEIGHT = [];
+
+  useEffect(() => {
+    getExerciseLogs();
+    console.log("workoutDetailsScreen");
+    // console.log(props.navigation.state.params);
+  }, []);
+
+  const getExerciseLogs = () => {
+    // get the data for that exercise
+    const data = props.exerciseLog.filter(
+      (exercise) =>
+        props.navigation.state.params.exerciseName == exercise.exerciseName
+    );
+    // show the data in order from most recent to oldest    // THIS MIGHT NOT BE REQUIRED
+    const sortedData = data.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+    // setPastData([...sortedData]);
+    // console.log('sortedData[0]:  ',sortedData[0])
+
+
+    let i = 0;
+    sortedData.forEach((log) => {
+      if (i < 5) {
+        XDATA.push(log.date.slice(5, 10));
+        YDATAWEIGHT.push(log.weight);
+        // THIS DOES NOT WORK :()
+        // setXData([...xData, log.date.slice(5, 10)]);
+        // setYDataWeight([...yDataWeight, log.weight]);
+        // setYDataSets([...yDataSets, log.sets]);
+        // setYDataReps([...yDataReps, log.reps]);
+      }
+      i++;
+    });
+    console.log(YDATAWEIGHT)
+    // DOES NOT WORK
+    // setChartData({
+    //   labels: XDATA,
+    //   datasets: [
+    //     {
+    //       data: YDATAWEIGHT,
+    //     },
+    //   ],
+    // });
+  };
+  // getExerciseLogs();
+  return (
+    <BackGround>
+      {/* <LineChart
+        // yAxisLabel="$"
+        // yAxisSuffix="k"
+        data={{
+          labels: XDATA,
+          datasets: [{
+            data: [YDATAWEIGHT]
+          }]
+        }}
+        width={Dimensions.get("window").width} // from react-native
+        height={220}
+        chartConfig={{
+          backgroundColor: "#01184a",
+          backgroundGradientFrom: "#01184a",
+          backgroundGradientTo: "#00246b",
+          // decimalPlaces: 2, // optional, defaults to 2dp
+          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+          // style: {
+          //   borderRadius: 16,
+          // },
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16,
+        }}
+      /> */}
+      <View style={styles.exerciseLogDataContainer}>
+        <View style={styles.titleBar}>{/* <Text>{xData[0]}</Text> */}</View>
+        <CircleWithText text={0} />
+      </View>
+      {/* <Text>{xData[0]}</Text> */}
+      <Text>{yDataSets[0]}</Text>
+      <Text>{typeof yDataSets[0]}</Text>
+      {/* <Text>{typeof yDataReps[0]}</Text> */}
+    </BackGround>
+  );
 };
 
-const height = 200;
-const { width } = Dimensions.get('window');
-const verticalPadding = 5;
-const cursorRadius = 10;
-const labelWidth = 100;
+const styles = StyleSheet.create({
+  exerciseLogDataContainer: {},
+  titleBar: { width: SCREEN_WIDTH, height: 1, backgroundColor: "white" },
+});
 
-const data = [
-  { x: new Date(2018, 9, 1), y: 0 },
-  { x: new Date(2018, 9, 16), y: 0 },
-  { x: new Date(2018, 9, 17), y: 200 },
-  { x: new Date(2018, 10, 1), y: 200 },
-  { x: new Date(2018, 10, 2), y: 300 },
-  { x: new Date(2018, 10, 5), y: 300 },
-];
+workoutDetailsScreen.navigationOptions = (props) => ({
+  title: props.navigation.state.params.exerciseName,
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+  headerTintColor: "#fff",
+  headerStyle: {
+    backgroundColor: "#000c23",
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
+  },
+  headerRight: () => (
+    <Button //RIGHT BUTTON
+      iconRight
+      icon={<AntDesign name="infocirlceo" size={24} color="white" />}
+      buttonStyle={{ backgroundColor: "#000c23" }} // width: BUTTON_WIDTH,
+      // textStyle={{ color: "white", fontWeight: "bold" }}
+      onPress={() => {
+        console.log("3 buttons presses");
+        props.navigation.navigate("details", props.navigation.state.params);
+      }}
+    />
+  ),
+  headerLeft: () => (
+    <Button // LEFT BUTTON
+      iconLeft
+      icon={<AntDesign name="left" size={25} color="white" />}
+      // textStyle={{ color: "white", fontWeight: "bold" }}
+      buttonStyle={{ backgroundColor: "#000c23" }}
+      onPress={() => {
+        console.log("go back was clicked");
+        props.navigation.goBack();
+      }}
+    />
+  ),
+});
 
-const scaleX = scaleTime().domain([new Date(2018, 9, 1), new Date(2018, 10, 5)]).range([0, width]);
-const scaleY = scaleLinear().domain([0, 300]).range([height - verticalPadding, verticalPadding]);
-const scaleLabel = scaleQuantile().domain([0, 300]).range([0, 200, 300]);
-const line = d3.shape.line()
-  .x(d => scaleX(d.x))
-  .y(d => scaleY(d.y))
-  .curve(d3.shape.curveBasis)(data);
-const properties = path.svgPathProperties(line);
-const lineLength = properties.getTotalLength();
-
-export default class workoutDetailsScreen extends React.Component {
-  cursor = React.createRef();
-
-  label = React.createRef();
-
-  state = {
-    x: new Animated.Value(0),
-  };
-
-  moveCursor(value) {
-    const { x, y } = properties.getPointAtLength(lineLength - value);
-    this.cursor.current.setNativeProps({ top: y - cursorRadius, left: x - cursorRadius });
-    const label = scaleLabel(scaleY.invert(y));
-    this.label.current.setNativeProps({ text: `${label} CHF` });
-  }
-
-  componentDidMount() {
-    this.state.x.addListener(({ value }) => this.moveCursor(value));
-    this.moveCursor(0);
-  }
-
-  render() {
-    const { x } = this.state;
-    const translateX = x.interpolate({
-      inputRange: [0, lineLength],
-      outputRange: [width - labelWidth, 0],
-      extrapolate: 'clamp',
-    });
-    return (
-      <SafeAreaView style={styles.root}>
-        <View style={styles.container}>
-          <Svg {...{ width, height }}>
-            <Defs>
-              <LinearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="gradient">
-                <Stop stopColor="#CDE3F8" offset="0%" />
-                <Stop stopColor="#eef6fd" offset="80%" />
-                <Stop stopColor="#FEFFFF" offset="100%" />
-              </LinearGradient>
-            </Defs>
-            <Path d={line} fill="transparent" stroke="#367be2" strokeWidth={5} />
-            <Path d={`${line} L ${width} ${height} L 0 ${height}`} fill="url(#gradient)" />
-            <View ref={this.cursor} style={styles.cursor} />
-          </Svg>
-          <Animated.View style={[styles.label, { transform: [{ translateX }] }]}>
-            <TextInput ref={this.label} />
-          </Animated.View>
-          <Animated.ScrollView
-            style={StyleSheet.absoluteFill}
-            contentContainerStyle={{ width: lineLength * 2 }}
-            showsHorizontalScrollIndicator={false}
-            scrollEventThrottle={16}
-            bounces={false}
-            onScroll={Animated.event(
-              [
-                {
-                  nativeEvent: {
-                    contentOffset: { x },
-                  },
-                },
-              ],
-              { useNativeDriver: true },
-            )}
-            horizontal
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
+function mapStateToProps({ exerciseLog }) {
+  return { exerciseLog };
 }
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-  container: {
-    marginTop: 60,
-    height,
-    width,
-  },
-  cursor: {
-    width: cursorRadius * 2,
-    height: cursorRadius * 2,
-    borderRadius: cursorRadius,
-    borderColor: '#367be2',
-    borderWidth: 3,
-    backgroundColor: 'white',
-  },
-  label: {
-    position: 'absolute',
-    top: -45,
-    left: 0,
-    backgroundColor: 'lightgray',
-    width: labelWidth,
-  },
-});
+export default connect(mapStateToProps)(workoutDetailsScreen);
