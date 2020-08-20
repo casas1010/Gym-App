@@ -30,6 +30,8 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { stubArray } from "lodash";
+import { FlatList } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-navigation";
 // import { } from "react-native-gesture-handler";
 
 const WIDTH = Dimensions.get("window").width * 0.95;
@@ -78,17 +80,96 @@ const workoutDetailsScreen = (props) => {
   const [yDataSets, setYDataSets] = useState([]);
   const [yDataReps, setYDataReps] = useState([]);
 
-  const [repsValue1, setRepsValue1] = useState();
-  const [weightValue1, setWeightValue1] = useState();
+  // const [repsValue1, setRepsValue1] = useState();
+  // const [weightValue1, setWeightValue1] = useState();
 
   const [exerciseLogData, setExerciseLogData] = useState([]);
-  const demoLogDataObj = {
-    setNumber: null,
-    reps: yDataReps[0], // data from last recorded exercise is used as starting point for this exercise
-    weight: yDataWeight[0], // data from last recorded exercise is used as starting point for this exercise
-  };
 
   const [modalOpen, setModalOpen] = useState(false);
+
+  // LOADING DATA LOGIC STARTS
+  useEffect(() => {
+    getExerciseLogs();
+    console.log("workoutDetailsScreen");
+    // console.log(props.navigation.state.params);
+  }, []);
+
+  const getExerciseLogs = () => {
+    // get the data for that exercise
+    const data = props.exerciseLog.filter(
+      (exercise) =>
+        props.navigation.state.params.exerciseName == exercise.exerciseName
+    );
+    // show the data in order from most recent to oldest    // THIS MIGHT NOT BE REQUIRED
+    const sortedData = data.sort(function (a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+    // setPastData([...sortedData]);
+    // console.log('sortedData[0]:  ',sortedData[0])
+
+    let i = 0;
+    sortedData.forEach((log) => {
+      if (i < 5) {
+        // XDATA.push(log.date.slice(5, 10));
+        // YDATAWEIGHT.push(log.weight);
+        // THIS DOES NOT WORK :()
+        setXData([...xData, log.date.slice(5, 10)]);
+        setYDataWeight([...yDataWeight, log.weight.toString()]);
+        setYDataSets([...yDataSets, log.sets.toString()]);
+        setYDataReps([...yDataReps, log.reps.toString()]);
+      }
+      i++;
+    });
+
+    //
+    //
+    //
+    // DOES NOT WORK
+    // setChartData({
+    //   labels: XDATA,
+    //   datasets: [
+    //     {
+    //       data: YDATAWEIGHT,
+    //     },
+    //   ],
+    // });
+  };
+
+  // LOADING DATA LOGIC ENDS
+
+  // FLASTLIST LOGIC STARTS
+
+  useEffect(() => {
+    console.log("exerciseLogData: ", exerciseLogData);
+  }, [exerciseLogData]);
+
+  useEffect(() => {
+    flatListLogic();
+  }, [yDataSets]);
+
+  const flatListLogic = () => {
+    let masterArray = [];
+
+    // make an array with the number of sets
+    // fill the array with the demoLogDataObj
+    for (let i = 0; i < yDataSets[0]; i++) {
+      const demoLogDataObj = {
+        arrayNumber: i,
+        setNumber: null,
+        reps: yDataReps[0], // data from last recorded exercise is used as starting point for this exercise
+        weight: yDataWeight[0], // data from last recorded exercise is used as starting point for this exercise
+      };
+
+      masterArray.push(demoLogDataObj);
+    }
+    // console.log("masterArray.length:  ", masterArray.length);
+    // console.log("masterArray:  ", masterArray);
+
+    // store the array in the exerciseLogData state
+    setExerciseLogData([...masterArray]);
+  };
+
+  // FLASTLIST LOGIC ENDS
 
   // TIMER FUNCTIONALITY START
 
@@ -150,157 +231,142 @@ const workoutDetailsScreen = (props) => {
 
   // TIMER FUNCTIONALITY ENDS
 
-  useEffect(() => {
-    getExerciseLogs();
-    console.log("workoutDetailsScreen");
-    // console.log(props.navigation.state.params);
-  }, []);
-
-  const getExerciseLogs = () => {
-    // get the data for that exercise
-    const data = props.exerciseLog.filter(
-      (exercise) =>
-        props.navigation.state.params.exerciseName == exercise.exerciseName
-    );
-    // show the data in order from most recent to oldest    // THIS MIGHT NOT BE REQUIRED
-    const sortedData = data.sort(function (a, b) {
-      return new Date(b.date) - new Date(a.date);
-    });
-    // setPastData([...sortedData]);
-    // console.log('sortedData[0]:  ',sortedData[0])
-
-    let i = 0;
-    sortedData.forEach((log) => {
-      if (i < 5) {
-        // XDATA.push(log.date.slice(5, 10));
-        // YDATAWEIGHT.push(log.weight);
-        // THIS DOES NOT WORK :()
-        setXData([...xData, log.date.slice(5, 10)]);
-        setYDataWeight([...yDataWeight, log.weight.toString()]);
-        setYDataSets([...yDataSets, log.sets.toString()]);
-        setYDataReps([...yDataReps, log.reps.toString()]);
-      }
-      i++;
-    });
-
-    //
-    //
-    //
-    // DOES NOT WORK
-    // setChartData({
-    //   labels: XDATA,
-    //   datasets: [
-    //     {
-    //       data: YDATAWEIGHT,
-    //     },
-    //   ],
-    // });
-  };
-
   return (
     <BackGround>
-      <ScrollView>
-        <View style={styles.exerciseLogDataContainer}>
-          <View style={styles.titleBarContainer}>
-            <View style={styles.titleBar}></View>
-            <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
+      {/* <SafeAreaView> */}
+      <View style={styles.exerciseLogDataContainer}>
+        <View style={styles.titleBarContainer}>
+          <View style={styles.titleBar}></View>
+          <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
 
-            <View style={styles.timeContainer}>
-              <MaterialCommunityIcons name="timer" size={24} color="white" />
-              <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
-            </View>
-          </View>
-          <View style={styles.box}></View>
-          <View style={styles.logContainer}>
-            <View style={styles.box}></View>
-            <View style={styles.logDataContainer}>
-              <CircleWithText text={1} />
-              <TextInput
-                style={styles.rep_WeightNumber}
-                onChangeText={(text) => setRepsValue1(text)}
-                defaultValue={yDataReps[0]}
-                value={repsValue1}
-                keyboardType={"number-pad"}
-              />
-              <Text style={styles.repText}>REPS</Text>
-              <Text style={styles.repDivider}> /</Text>
-              <TextInput
-                style={styles.rep_WeightNumber}
-                onChangeText={(text) => setWeightValue1(text)}
-                defaultValue={yDataWeight[0]}
-                value={weightValue1}
-                keyboardType={"number-pad"}
-              />
-              <Text style={styles.repText}>LB</Text>
-            </View>
-            <View style={styles.box}></View>
-            <View style={styles.restTimerContainer}>
-              <View style={styles.timerBox}></View>
-              <TouchableOpacity
-                style={styles.clockContainer}
-                onPress={() => {
-                  console.log("press called!");
-                  setModalOpen(!modalOpen);
-                }}
-              >
-                <MaterialCommunityIcons name="timer" size={30} color="white" />
-
-                <Text style={styles.clockText}>
-                  {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
-                  {seconds}
-                </Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.timeContainer}>
+            <MaterialCommunityIcons name="timer" size={24} color="white" />
+            <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
           </View>
         </View>
-        {/*  */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalOpen}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
+        <View style={styles.box}></View>
+        {/* <View style={{ flex: 1 }}> */}
+        <FlatList
+          horizontal={false}
+          showsHorizontalScrollIndicator={false}
+          // bounces={false}
+          data={exerciseLogData}
+          contentContainerStyle={{ paddingBottom: 72 }}
+          keyExtractor={(result) => {
+            // console.log('result.arrayNumber.toString():  ',result.arrayNumber.toString())
+            // return "string";
+            return result.arrayNumber.toString();
           }}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalView}>
-              <View style={styles.modalTimerControlsContainer}>
-                <Button
-                  // title="decrease"
-                  type="clear"
-                  onPress={() => removeSeconds(15)}
-                  icon={<Entypo name="back-in-time" size={50} color="black" />}
-                />
-                <Text style={styles.modalText}>
-                  {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
-                  {seconds}
-                </Text>
-                <Button
-                  type="clear"
-                  // title="increase"
-                  onPress={() => addSeconds(15)}
-                  icon={
-                    <Entypo
-                      name="back-in-time"
-                      size={50}
-                      color="black"
-                      style={{ transform: [{ rotateY: "180deg" }] }}
+          renderItem={({ item }) => {
+            // console.log("item.arrayNumber:  ", item.arrayNumber);
+            return (
+              <View style={styles.logCardContainer}>
+                <View style={styles.box}></View>
+                <View style={styles.logDataContainer}>
+                  <CircleWithText text={item.arrayNumber + 1} />
+                  <TextInput
+                    style={styles.rep_WeightNumber}
+                    // onChangeText={(text) => setRepsValue1(text)}
+
+                    onChangeText={(text) => {
+                      const dummyArray = [...exerciseLogData];
+                      dummyArray[item.arrayNumber].reps = text;
+                      console.log("dummyArray:  ", dummyArray);
+
+                      setExerciseLogData([...dummyArray]);
+                    }}
+                    defaultValue={item.reps}
+                    // value={repsValue1}
+                    keyboardType={"number-pad"}
+                  />
+                  <Text style={styles.repText}>REPS</Text>
+                  <Text style={styles.repDivider}> /</Text>
+                  <TextInput
+                    style={styles.rep_WeightNumber}
+                    // onChangeText={(text) => setWeightValue1(text)}
+                    defaultValue={item.weight}
+                    // value={weightValue1}
+                    keyboardType={"number-pad"}
+                  />
+                  <Text style={styles.repText}>LB</Text>
+                </View>
+                <View style={styles.box}></View>
+                <View style={styles.restTimerContainer}>
+                  <View style={styles.timerBox}></View>
+                  <TouchableOpacity
+                    style={styles.clockContainer}
+                    onPress={() => {
+                      console.log("press called!");
+                      setModalOpen(!modalOpen);
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="timer"
+                      size={30}
+                      color="white"
                     />
-                  }
-                />
+                    <Text style={styles.clockText}>
+                      {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
+                      {seconds}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <TouchableOpacity
-                style={{ ...styles.openButton, backgroundColor: "#2196F3" }}
-                onPress={() => {
-                  setModalOpen(!modalOpen);
-                }}
-              >
-                <Text style={styles.textStyle}>Close Rest Timer</Text>
-              </TouchableOpacity>
+            );
+          }}
+        />
+        <View style={styles.box}></View>
+
+        {/* </View> */}
+      </View>
+      {/*  */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalOpen}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <View style={styles.modalTimerControlsContainer}>
+              <Button
+                // title="decrease"
+                type="clear"
+                onPress={() => removeSeconds(15)}
+                icon={<Entypo name="back-in-time" size={50} color="black" />}
+              />
+              <Text style={styles.modalTimeText}>
+                {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
+                {seconds}
+              </Text>
+              <Button
+                type="clear"
+                // title="increase"
+                onPress={() => addSeconds(15)}
+                icon={
+                  <Entypo
+                    name="back-in-time"
+                    size={50}
+                    color="black"
+                    style={{ transform: [{ rotateY: "180deg" }] }}
+                  />
+                }
+              />
             </View>
+            <TouchableOpacity
+              style={{ backgroundColor: "#2196F3" }}
+              onPress={() => {
+                setModalOpen(!modalOpen);
+              }}
+            >
+              <Text style={styles.modalText}>Close Rest Timer</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-      </ScrollView>
+        </View>
+      </Modal>
+      {/* </SafeAreaView> */}
     </BackGround>
   );
 };
@@ -341,8 +407,8 @@ const styles = StyleSheet.create({
     paddingRight: 6,
     marginTop: 20,
   },
-  logContainer: {
-    // backgroundColor: "red",
+  logCardContainer: {
+    // backgroundColor: "black",
     // position: 'relative'
   },
 
@@ -355,7 +421,7 @@ const styles = StyleSheet.create({
     width: 45,
   },
   logDataContainer: {
-    // backgroundColor: "yellow" ,
+    // backgroundColor: "yellow",
     flexDirection: "row",
   },
   rep_WeightNumber: {
@@ -363,7 +429,7 @@ const styles = StyleSheet.create({
     color: "white",
     // width: 38,
     height: 40,
-    backgroundColor: "red",
+    // backgroundColor: "red",
     marginLeft: 10,
     marginRight: 10,
   },
@@ -376,13 +442,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   restTimerContainer: {
-    backgroundColor: "red",
+    // backgroundColor: "red",
     // height: 20,
     width: SCREEN_WIDTH,
     flexDirection: "row",
   },
   timerBox: {
-    backgroundColor: "green",
+    // backgroundColor: "green",
     // height: 20,
     width: 29,
   },
@@ -396,8 +462,8 @@ const styles = StyleSheet.create({
   clockContainer: {
     // width: SCREEN_WIDTH,
     // height: 200,
-    flexDirection:'row',
-    backgroundColor: "red",
+    flexDirection: "row",
+    // backgroundColor: "red",
   },
   clockText: {
     fontSize: 25,
@@ -409,12 +475,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 22,
   },
-  modalTimerControlsContainer: {
-    flexDirection: "row",
-    backgroundColor: "red",
-    alignItems: "center",
-  },
-
   modalView: {
     margin: 20,
     backgroundColor: "white",
@@ -430,6 +490,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  modalTimerControlsContainer: {
+    flexDirection: "row",
+    backgroundColor: "red",
+    alignItems: "center",
+  },
+
   openButton: {
     backgroundColor: "#F194FF",
     borderRadius: 20,
@@ -441,8 +507,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  modalText: {
-    backgroundColor: "green",
+  modalTimeText: {
+    // backgroundColor: "green",
     // marginBottom: 10,
     marginLeft: 20,
     marginRight: 20,
@@ -450,7 +516,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  textStyle: {
+  modalText: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
