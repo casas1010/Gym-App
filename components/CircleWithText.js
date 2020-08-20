@@ -17,6 +17,7 @@ const CircleWithText =(props)=>{
           height: size,
           borderRadius: size,
           borderWidth: borderWidth,
+          marginLeft: 24
         }}
       >
         <Text
