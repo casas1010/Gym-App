@@ -39,10 +39,6 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 const BUTTON_WIDTH = SCREEN_WIDTH * 0.3;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 
-// pull data from sheet 2
-// if there are no logs for that exercise, give the default DETAILS of 4 sets of 5 reps each at 10 lb
-// if there are logs for that exercise, input the last DETIALS, aswell as the diplay the history and the exercise number for that history
-
 {
   /* <LineChart
         // yAxisLabel="$"
@@ -140,37 +136,40 @@ const workoutDetailsScreen = (props) => {
   // FLASTLIST LOGIC STARTS
 
   useEffect(() => {
-    console.log("exerciseLogData: ", exerciseLogData);
+    // console.log("exerciseLogData: ", exerciseLogData);
   }, [exerciseLogData]);
 
   useEffect(() => {
     flatListLogic();
   }, [yDataSets]);
 
+  const addSet = () => {
+    console.log("exerciseLogData lenght:   ", exerciseLogData.length);
+    const dummyArray = [...exerciseLogData];
+    console.log("dummyArray length:  ", dummyArray.length);
+    const demoLogDataObj = {
+      arrayNumber: dummyArray.length,
+      setNumber: null,
+      reps: yDataReps[0],
+      weight: yDataWeight[0],
+    };
+
+    dummyArray.push(demoLogDataObj);
+    console.log("elements being printed");
+    dummyArray.forEach((element) => {
+      console.log("element number: ", element.arrayNumber);
+      console.log(element);
+      console.log("---------------------------------------------------");
+    });
+    setExerciseLogData([...dummyArray]);
+  };
+
   const flatListLogic = () => {
     let masterArray = [];
 
-    //top bar element
-    const topBar = {
-      arrayNumber: 0,
-      payload: (
-        <View style={styles.titleBarContainer}>
-          <View style={styles.titleBar}></View>
-          <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
-
-          <View style={styles.timeContainer}>
-            <MaterialCommunityIcons name="timer" size={24} color="white" />
-            <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
-          </View>
-        </View>
-      ),
-    };
-    // make the topbar the first element so it renders at the top
-    masterArray.push(topBar);
-
     // make an array with the number of sets
     // fill the array with the demoLogDataObj
-    for (let i = 1; i-1 < yDataSets[0]; i++) {
+    for (let i = 0; i < yDataSets[0]; i++) {
       const demoLogDataObj = {
         arrayNumber: i,
         setNumber: null,
@@ -180,21 +179,6 @@ const workoutDetailsScreen = (props) => {
 
       masterArray.push(demoLogDataObj);
     }
-    // console.log("masterArray.length:  ", masterArray.length);
-    // console.log("masterArray:  ", masterArray);
-
-    // add last card to describe the exercise.
-    // note: for some reason nothing renders after flat list
-    const lastObject = {
-      arrayNumber: masterArray.length,
-      payload: (
-        <View
-          style={{ width: 200, height: 200, backgroundColor: "red" }}
-        ></View>
-      ),
-    };
-
-    masterArray.push(lastObject);
 
     // store the array in the exerciseLogData state
     setExerciseLogData([...masterArray]);
@@ -264,106 +248,104 @@ const workoutDetailsScreen = (props) => {
 
   return (
     <BackGround>
-      {/* <SafeAreaView> */}
-      <View style={styles.exerciseLogDataContainer}>
+      <FlatList
+        ListHeaderComponent={
+          <View style={styles.titleBarContainer}>
+            <View style={styles.titleBar}></View>
+            <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
 
+            <View style={styles.timeContainer}>
+              <MaterialCommunityIcons name="timer" size={24} color="white" />
+              <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
+            </View>
+          </View>
+        }
+        ListFooterComponent={
+          <>
+            <View style={styles.box}></View>
 
-        <FlatList
-          horizontal={false}
-          showsHorizontalScrollIndicator={false}
-          // bounces={false}
-          data={exerciseLogData}
-          contentContainerStyle={{ paddingBottom: 72 }}
-          keyExtractor={(result) => {
-            // console.log('result.arrayNumber.toString():  ',result.arrayNumber.toString())
-            // return "string";
-            return result.arrayNumber.toString();
-          }}
-          renderItem={({ item }) => {
-            // console.log("item.arrayNumber:  ", item.arrayNumber);
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center" }}
+              onPress={() => addSet()}
+            >
+              <CircleWithText text={"+"} />
+              <Text style={styles.repText}>Add another set!</Text>
+            </TouchableOpacity>
+          </>
+        }
+        horizontal={false}
+        showsHorizontalScrollIndicator={false}
+        data={exerciseLogData}
+        extraData={exerciseLogData}
+        contentContainerStyle={{
+          paddingBottom: 72,
+        }}
+        keyExtractor={(result) => {
+          return result.arrayNumber.toString();
+        }}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.logCardContainer}>
+              <View style={styles.box}></View>
+              <View style={styles.logDataContainer}>
+                <CircleWithText text={item.arrayNumber + 1} />
+                <TextInput
+                  style={styles.rep_WeightNumber}
+                  onChangeText={(text) => {
+                    const dummyArray = [...exerciseLogData];
+                    dummyArray[item.arrayNumber].reps = text;
 
-            if (item.arrayNumber == 0) {
-              return item.payload;
-            }
-
-            if (item.arrayNumber == exerciseLogData.length - 1) {
-              return item.payload;
-            }
-
-            return (
-              <View style={styles.logCardContainer}>
-                <View style={styles.box}></View>
-                <View style={styles.logDataContainer}>
-                  <CircleWithText text={item.arrayNumber + 1} />
-                  <TextInput
-                    style={styles.rep_WeightNumber}
-                    // onChangeText={(text) => setRepsValue1(text)}
-
-                    onChangeText={(text) => {
-                      const dummyArray = [...exerciseLogData];
-                      dummyArray[item.arrayNumber].reps = text;
-                      console.log("dummyArray:  ", dummyArray);
-
-                      setExerciseLogData([...dummyArray]);
-                    }}
-                    defaultValue={item.reps}
-                    // value={repsValue1}
-                    keyboardType={"number-pad"}
-                  />
-                  <Text style={styles.repText}>REPS</Text>
-                  <Text style={styles.repDivider}> /</Text>
-                  <TextInput
-                    style={styles.rep_WeightNumber}
-                    // onChangeText={(text) => setWeightValue1(text)}
-                    onChangeText={(text) => {
-                      const dummyArray = [...exerciseLogData];
-                      dummyArray[item.arrayNumber].weight = text;
-                      console.log("dummyArray:  ", dummyArray);
-
-                      setExerciseLogData([...dummyArray]);
-                    }}
-                    defaultValue={item.weight}
-                    // value={weightValue1}
-                    keyboardType={"number-pad"}
-                  />
-                  <Text style={styles.repText}>LB</Text>
-                </View>
-                <View style={styles.box}></View>
-                <View style={styles.restTimerContainer}>
-                  <View style={styles.timerBox}></View>
-                  <TouchableOpacity
-                    style={styles.clockContainer}
-                    onPress={() => {
-                      console.log("press called!");
-                      setModalOpen(!modalOpen);
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="timer"
-                      size={30}
-                      color="white"
-                    />
-                    <Text style={styles.clockText}>
-                      {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
-                      {seconds}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                    setExerciseLogData([...dummyArray]);
+                  }}
+                  defaultValue={item.reps}
+                  keyboardType={"number-pad"}
+                />
+                <Text style={styles.repText}>REPS</Text>
+                <Text style={styles.repDivider}> /</Text>
+                <TextInput
+                  style={styles.rep_WeightNumber}
+                  onChangeText={(text) => {
+                    const dummyArray = [...exerciseLogData];
+                    dummyArray[item.arrayNumber].weight = text;
+                    setExerciseLogData([...dummyArray]);
+                  }}
+                  defaultValue={item.weight}
+                  keyboardType={"number-pad"}
+                />
+                <Text style={styles.repText}>LB</Text>
               </View>
-            );
-          }}
-        />
-        {/* END OF FLATLIST */}
+              <View style={styles.box}></View>
+              <View style={styles.restTimerContainer}>
+                <View style={styles.timerBox}></View>
+                <TouchableOpacity
+                  style={styles.clockContainer}
+                  onPress={() => {
+                    console.log("press called!");
+                    setModalOpen(!modalOpen);
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="timer"
+                    size={30}
+                    color="white"
+                  />
+                  <Text style={styles.clockText}>
+                    {minutes}:{seconds < 10 && seconds >= 0 ? "0" : null}
+                    {seconds}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          );
+        }}
+      />
+      {/* END OF FLATLIST */}
 
-        {/* </View> */}
-      </View>
       {/* INFO ABOUT EXERCISE STARTS */}
 
-      <View></View>
-      <View style={styles.box}></View>
-
       {/* INFO ABOUT EXERCISE ENDS */}
-      <Modal
+
+      {/* <Modal
         animationType="slide"
         transparent={true}
         visible={modalOpen}
@@ -408,15 +390,17 @@ const workoutDetailsScreen = (props) => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
-      {/* </SafeAreaView> */}
+      </Modal> */}
     </BackGround>
   );
 };
 
 const styles = StyleSheet.create({
   exerciseLogDataContainer: {
-    // flexDirection: "row",
+    // flex: 1,
+    flexDirection: "column",
+    backgroundColor: "blue",
+    // paddingBottom:150
   },
   titleBarContainer: {
     flexDirection: "row",
