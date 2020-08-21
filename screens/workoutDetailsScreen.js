@@ -150,9 +150,27 @@ const workoutDetailsScreen = (props) => {
   const flatListLogic = () => {
     let masterArray = [];
 
+    //top bar element
+    const topBar = {
+      arrayNumber: 0,
+      payload: (
+        <View style={styles.titleBarContainer}>
+          <View style={styles.titleBar}></View>
+          <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
+
+          <View style={styles.timeContainer}>
+            <MaterialCommunityIcons name="timer" size={24} color="white" />
+            <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
+          </View>
+        </View>
+      ),
+    };
+    // make the topbar the first element so it renders at the top
+    masterArray.push(topBar);
+
     // make an array with the number of sets
     // fill the array with the demoLogDataObj
-    for (let i = 0; i < yDataSets[0]; i++) {
+    for (let i = 1; i-1 < yDataSets[0]; i++) {
       const demoLogDataObj = {
         arrayNumber: i,
         setNumber: null,
@@ -164,6 +182,19 @@ const workoutDetailsScreen = (props) => {
     }
     // console.log("masterArray.length:  ", masterArray.length);
     // console.log("masterArray:  ", masterArray);
+
+    // add last card to describe the exercise.
+    // note: for some reason nothing renders after flat list
+    const lastObject = {
+      arrayNumber: masterArray.length,
+      payload: (
+        <View
+          style={{ width: 200, height: 200, backgroundColor: "red" }}
+        ></View>
+      ),
+    };
+
+    masterArray.push(lastObject);
 
     // store the array in the exerciseLogData state
     setExerciseLogData([...masterArray]);
@@ -235,17 +266,8 @@ const workoutDetailsScreen = (props) => {
     <BackGround>
       {/* <SafeAreaView> */}
       <View style={styles.exerciseLogDataContainer}>
-        <View style={styles.titleBarContainer}>
-          <View style={styles.titleBar}></View>
-          <Text style={styles.titleBarText}>{yDataSets[0]} Sets</Text>
 
-          <View style={styles.timeContainer}>
-            <MaterialCommunityIcons name="timer" size={24} color="white" />
-            <Text style={{ color: "white", paddingTop: 3 }}>ON</Text>
-          </View>
-        </View>
-        <View style={styles.box}></View>
-        {/* <View style={{ flex: 1 }}> */}
+
         <FlatList
           horizontal={false}
           showsHorizontalScrollIndicator={false}
@@ -259,6 +281,15 @@ const workoutDetailsScreen = (props) => {
           }}
           renderItem={({ item }) => {
             // console.log("item.arrayNumber:  ", item.arrayNumber);
+
+            if (item.arrayNumber == 0) {
+              return item.payload;
+            }
+
+            if (item.arrayNumber == exerciseLogData.length - 1) {
+              return item.payload;
+            }
+
             return (
               <View style={styles.logCardContainer}>
                 <View style={styles.box}></View>
@@ -284,6 +315,13 @@ const workoutDetailsScreen = (props) => {
                   <TextInput
                     style={styles.rep_WeightNumber}
                     // onChangeText={(text) => setWeightValue1(text)}
+                    onChangeText={(text) => {
+                      const dummyArray = [...exerciseLogData];
+                      dummyArray[item.arrayNumber].weight = text;
+                      console.log("dummyArray:  ", dummyArray);
+
+                      setExerciseLogData([...dummyArray]);
+                    }}
                     defaultValue={item.weight}
                     // value={weightValue1}
                     keyboardType={"number-pad"}
@@ -315,11 +353,16 @@ const workoutDetailsScreen = (props) => {
             );
           }}
         />
-        <View style={styles.box}></View>
+        {/* END OF FLATLIST */}
 
         {/* </View> */}
       </View>
-      {/*  */}
+      {/* INFO ABOUT EXERCISE STARTS */}
+
+      <View></View>
+      <View style={styles.box}></View>
+
+      {/* INFO ABOUT EXERCISE ENDS */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -467,6 +510,7 @@ const styles = StyleSheet.create({
   },
   clockText: {
     fontSize: 25,
+    color: "white",
   },
   ///////
   modalContainer: {
@@ -492,8 +536,9 @@ const styles = StyleSheet.create({
   },
   modalTimerControlsContainer: {
     flexDirection: "row",
-    backgroundColor: "red",
+    // backgroundColor: "red",
     alignItems: "center",
+    // zIndex:1
   },
 
   openButton: {
